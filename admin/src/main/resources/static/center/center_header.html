@@ -1,0 +1,139 @@
+<!--Header-part-->
+<div id="header">
+    <h1>故障交流中心</h1>
+</div>
+<!--close-Header-part-->
+
+<!--top-Header-messaages-->
+<div class="btn-group rightzero"> <a class="top_message tip-left" title="Manage Files"><i class="icon-file"></i></a> <a class="top_message tip-bottom" title="Manage Users"><i class="icon-manager"></i></a> <a class="top_message tip-bottom" title="Manage Comments"><i class="icon-reply"></i><span class="label label-important">0</span></a></div>
+<!--close-top-Header-messaages-->
+
+<!--top-Header-menu-->
+<div id="user-nav" class="navbar navbar-inverse">
+    <ul class="nav">
+        <li class=""><a title="" href="#"><i class="icon icon-user"></i> <span id ="username"></span></a></li>
+        <li class=""><a title="" href="center_message.html" id="comment_count"></a></li>
+        <li class=""><a title="" href="#"><i class="icon icon-cog"></i> <span class="text">设置</span></a></li>
+        <li class=""><a title="" href="#"><i class="icon icon-share-alt"></i> <span class="text" onclick="logout()">注销</span></a></li>
+    </ul>
+</div>
+<div id="search">
+    <input type="text" placeholder="搜索..."/>
+    <button type="submit" class="tip-left" title="Search"><i class="icon-search icon-white"></i></button>
+</div>
+<!--close-top-Header-menu-->
+
+<div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i></a>
+    <ul>
+        <li class="active"><a href="center_index.html"><i class="icon icon-home"></i> <span>首页</span></a></li>
+        <li class="active"><a href="center_my_index.html"><i class="icon icon-user"></i> <span>主页</span></a></li>
+        <li class="active"><a href="center_pushfeeds.html"><i class="icon icon-star"></i> <span>发现(推)</span></a></li>
+        <li class="active"><a href="center_pullfeeds.html"><i class="icon icon-star"></i> <span>发现(拉)</span></a></li>
+        <li class="active"><a href="center_my_followees.html"><i class="icon icon-heart"></i> <span>关注</span></a></li>
+        <li class="active"><a href="center_my_followers.html"><i class="icon icon-film"></i> <span>粉丝</span></a></li>
+        <li class="active"><a href="center_letter.html"><i class="icon icon-tasks"></i> <span>私信</span></a></li>
+        <li class="active"><a href="center_add_question.html"><i class="icon icon-pencil"></i> <span>提问</span></a></li>
+    </ul>
+</div>
+
+<script type="text/javascript">
+    // 获取cookie值(key)
+    function getCookie(cname)
+    {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++)
+        {
+            var c = ca[i].trim();
+            if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+        }
+        return "";
+    }
+
+    //判断是否登录
+    $(function(){
+        var $ticket= getCookie("ticket")
+        console.log($ticket);
+        if($ticket != ""){
+            var datas = {
+                ticket: $ticket
+            };
+            //判断ticket是否有效
+            $.ajax({
+                url: '/admin/ifTicket',
+                type: 'post',
+//          dataType: 'json',
+                data: datas,
+                success: function (json) {
+                    console.log(json);
+                    if (json == "0") {
+                        window.location.href = 'login.html';//未登录跳转到登录界面
+                    }
+                },
+                error: function () {
+                    alert('false');
+                }
+            })
+        }else{
+            window.location.href = 'login.html';//未登录跳转到登录界面
+        }
+    });
+
+    //注销
+    function logout()
+    {
+        $.ajax({
+            url: '/admin/logout',
+            type: 'post',
+//                            dataType: 'json',
+            //data: datas,
+            success: function (json) {
+                console.log(json);
+                if (json == "1") {
+                    window.location.href = 'login.html';//登录成功跳转
+                }
+            },
+            error: function () {
+                alert('false');
+            }
+        })
+    }
+
+    //前往主页
+    /*function goto()
+    {
+        localStorage.setItem("viewname",localStorage.getItem("username"));
+        window.location.href = "center_my_index.html";
+    }*/
+
+    //添加用户名到页面
+    var $username = localStorage.getItem("username");
+    $("#username").html($username);
+
+    var datas = {
+        username: $username
+    };
+    $.ajax({
+        url: '/center/unread_count',
+        type: 'post',
+//      dataType: 'json',
+        data: datas,
+        success: function (json) {
+            console.log(json);
+            var html = '';
+            if(json.data != 0){
+                html = '<i class="icon icon-envelope"></i> <span class="text">消息</span><span class="label label-important">'+ json.data + '</span>'
+            }else{
+                html = '<i class="icon icon-envelope"></i> <span class="text">消息</span>';
+            }
+
+            $("#comment_count").html(html);
+        },
+        error: function () {
+            alert('false');
+        }
+    })
+
+
+
+</script>

@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>云端可视化监控管理系统</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="css/admin-style.css" />
+    <link rel="stylesheet" href="css/switch.css" />
+    <link rel="stylesheet" href="css/admin-media.css" class="skin-color" />
+
+
+    <link href="./css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+    <!--<link rel="stylesheet" type="text/css" href="css/city-picker.css">-->
+
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+        <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>车库总览</a>
+        <a href="#" class="current">车库管理</a>
+        </div>
+        <!--<h1>实时停车概况</h1>-->
+    </div>
+    <div class="container-fluid">
+
+        <div class="widget-box">
+            <div class="widget-content">
+
+                <!--搜索框与车库标题-->
+                <div class="row-fluid" style="font-size: medium">
+                    <div class="span4">
+                        <div>
+                            <select style="margin-right: 5%;width: 25%;height: 35px;font-size: 15px;" id="province"></select>
+                            <select style="margin-right: 5%;width: 25%;height: 35px;font-size: 15px;" id="city"></select>
+                            <button id="reset" class="btn btn-primary" style="margin-right: 1%;margin-bottom: 2%;" >重置</button>
+                            <button id="search_garage" class="btn btn-success" style="margin-bottom: 2%;">查找车库</button>
+                        </div>
+                    </div>
+
+                    <div class="span7" style="width: 65.44680851063829%">
+                        <h4 id="garage_name"></h4>
+                    </div>
+                </div>
+
+                <!--车库列表与车库三部分信息模块-->
+                <div class="row-fluid" style="font-size: medium">
+                    <div class="span4">
+                        <div class="widget-box" id="all_garage" style="display:block">
+                            <div class="widget-title"><span class="icon"><i class="icon-list"></i></span>
+                                <h5>车库列表</h5>
+                                <div class="buttons"><a href="garage_manage_add.html" class="btn btn-mini"><i class="icon-plus"></i> 添加</a></div>
+                            </div>
+                            <div class="widget-content" id="show_garage">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="span7" style="width: 65.44680851063829%">
+                        <div class="widget-box">
+                            <div class="widget-title">
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a data-toggle="tab" href="#tab1">车库基本信息</a></li>
+                                    <li><a data-toggle="tab" href="#tab2">故障报警信息</a></li>
+                                    <li><a data-toggle="tab" href="#tab3">实时运行数据</a></li>
+                                    <div class="buttons"><a href="garage_manage_detail.html" class="btn btn-mini" id="return"><i class="icon-pencil"></i> 编辑</a></div>
+                                </ul>
+
+                            </div>
+                            <div class="widget-content tab-content">
+                                <div id="tab1" class="tab-pane active">
+                                    <div class="widget-box widget-plain">
+                                        <div class="center">
+                                            <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                <!--<li>
+                                                    <div class="left peity_bar_neutral" style="font-size: 14px;">车库编号</div>
+                                                    <div class="right" style="padding: 9px 0px 7px 0;width: 120px"><strong id="garage_code" style="margin-top: 0px;font-size: 18px"></strong></div>
+                                                </li>-->
+                                                <li>
+                                                    <div class="left peity_bar_neutral" style="font-size: 14px;">总车位数量</div>
+                                                    <div class="right" style="padding: 9px 0px 7px 0;"><strong id="total_num" style="margin-top: 0px;font-size: 18px"></strong></div>
+                                                </li>
+                                                <li>
+                                                    <div class="left peity_bar_good" style="font-size: 14px;">空闲车位数量</div>
+                                                    <div class="right" style="padding: 9px 0px 7px 0;"><strong id="free_num" style="margin-top: 0px;font-size: 18px"></strong></div>
+                                                </li>
+                                                <li>
+                                                    <div class="left peity_bar_bad" style="font-size: 14px;">停车费用</div>
+                                                    <div class="right" style="padding: 9px 0px 7px 0;"><strong id="price_per_hour" style="margin-top: 0px;font-size: 18px"></strong></div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <h4>车位状态</h4>
+                                    <div id="garage1_CarPlace" style="display: block">
+                                    <!--    <div class="span4" style="width: 10%">
+                                        </div>
+                                        <div class="span7" style="width: 85%;">
+                                            <table class="table table-striped" style="border: 1px solid #ccc;">
+                                                <tr>
+                                                    <td>601&nbsp<span class='label label-important'>有车</span></td>
+                                                    <td>602&nbsp<span class='label label-success'>空闲</span></td>
+                                                    <td>603&nbsp<span class='label label-success'>空闲</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>501&nbsp<span class='label label-important'>有车</span></td>
+                                                    <td>502&nbsp<span class='label label-success'>空闲</span></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>401&nbsp<span class='label label-important'>有车</span></td>
+                                                    <td>402&nbsp<span class='label label-success'>空闲</span></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>301&nbsp<span class='label label-important'>有车</span></td>
+                                                    <td>302&nbsp<span class='label label-success'>空闲</span></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>201&nbsp<span class='label label-success'>空闲</span></td>
+                                                    <td>202&nbsp<span class='label label-important'>有车</span></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>101&nbsp<span class='label label-important'>有车</span></td>
+                                                    <td>102&nbsp<span class='label label-important'>有车</span></td>
+                                                    <td></td>
+                                                </tr>
+                                            </table>
+                                        </div>-->
+                                    </div>
+                                    <div id="other_CarPlace" style="display: none">
+                                        <div class="span4" style="width: 10%">
+                                            <table class="table table-striped" id="sub_list">
+                                                <tr>
+                                                    <td><a href="#" class="btn btn-primary btn-mini" id="sub_1" style="border: 0;">子车库 1</a></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><a href="#" class="btn btn-primary btn-mini" id="sub_2">子车库 2</a></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><a href="#" class="btn btn-primary btn-mini" id="sub_3">子车库 3</a></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><a href="#" class="btn btn-primary btn-mini" id="sub_4">子车库 4</a></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><a href="#" class="btn btn-primary btn-mini" id="sub_5">子车库 5</a></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><a href="#" class="btn btn-primary btn-mini" id="sub_6">子车库 6</a></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="span7" style="width: 85%;">
+                                            <!--<h5 id="sub_name">子车库1 车位状态</h5>-->
+                                            <table class="table table-striped" id="sub_car_place" style="border: 1px solid #ccc;">
+                                                <tr>
+                                                    <td>101&nbsp<span class='label label-important'>有车</span></td>
+                                                    <td>102&nbsp<span class='label label-success'>空闲</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>103&nbsp<span class='label label-important'>有车</span></td>
+                                                    <td>104&nbsp<span class='label label-success'>空闲</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>105&nbsp<span class='label label-important'>有车</span></td>
+                                                    <td>106&nbsp<span class='label label-success'>空闲</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>107&nbsp<span class='label label-important'>有车</span></td>
+                                                    <td>108&nbsp<span class='label label-success'>空闲</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>109&nbsp<span class='label label-success'>空闲</span></td>
+                                                    <td>110&nbsp<span class='label label-important'>有车</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>111&nbsp<span class='label label-important'>有车</span></td>
+                                                    <td>112&nbsp<span class='label label-important'>有车</span></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- 故障报警标志 -->
+                                <div id="tab2" class="tab-pane">
+                                    <!--<h4 id="address1"></h4>-->
+                                    <div class="widget-box widget-plain">
+                                        <div class="center">
+                                            <h4>车库报警标志</h4>
+                                            <table style="width: 100%">
+                                                <tr>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">急停报警</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong id="jiting" style="margin-top: 0px;font-size: 18px"></strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">光电报警</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong id="guangdian" style="margin-top: 0px;font-size: 18px"></strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">热继过载报警</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong id="rejiguozai" style="margin-top: 0px;font-size: 18px"></strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">断电报警</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong id="duandian" style="margin-top: 0px;font-size: 18px"></strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">防松链报警</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong id="fangsonglian" style="margin-top: 0px;font-size: 18px"></strong></div>
+                                                            </li>
+
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">极限报警</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong id="jixian" style="margin-top: 0px;font-size: 18px"></strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">挂钩报警</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong id="guagou" style="margin-top: 0px;font-size: 18px"></strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">相序报警</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong id="xiangxu" style="margin-top: 0px;font-size: 18px"></strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">横移电机诊断结果</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong id="HengYiMotor" style="margin-top: 0px;font-size: 18px"><span class='label label-success' style='font-size: 14px'>正常</span></strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">升降电机诊断结果</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong id="ShengJiangMotor" style="margin-top: 0px;font-size: 18px"><span class='label label-success' style='font-size: 14px'>正常</span></strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                </div>
+                                </div>
+
+                                <!-- 实时运行数据曲线 -->
+                                <div id="tab3" class="tab-pane">
+                                    <div class="widget-box widget-plain">
+                                        <div class="center">
+                                            <!--<h4>SZ201712001-TR01号横移电机-振动信号时频域指标</h4>-->
+                                            <!--<table style="width: 100%">
+                                                <tr>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">波形因子</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong style="margin-top: 0px;font-size: 18px">1.346</strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">脉冲因子</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong style="margin-top: 0px;font-size: 18px">3.851</strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                    <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                        <li>
+                                                            <div class="left peity_bar_neutral" style="width: 90px;">峰值因子</div>
+                                                            <div class="right" style="padding: 9px 0px 7px 0;"><strong style="margin-top: 0px;font-size: 18px">2.875</strong></div>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">裕度因子</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong style="margin-top: 0px;font-size: 18px">4.364</strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">偏度因子</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong style="margin-top: 0px;font-size: 18px">3.321</strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">峭度因子</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong style="margin-top: 0px;font-size: 18px">2.785</strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">0.01f-0.4f谱段能量百分比</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong style="margin-top: 0px;font-size: 18px">0.0023</strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">0.4f-0.5f谱段能量百分比</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong style="margin-top: 0px;font-size: 18px">0.0352</strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">0.5f谱段能量百分比</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong style="margin-top: 0px;font-size: 18px">0.0254</strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                <td>
+                                                    <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                        <li>
+                                                            <div class="left peity_bar_neutral" style="width: 90px;">0.5f-1f谱段能量百分比</div>
+                                                            <div class="right" style="padding: 9px 0px 7px 0;"><strong style="margin-top: 0px;font-size: 18px">0.0142</strong></div>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                        <li>
+                                                            <div class="left peity_bar_neutral" style="width: 90px;">1f谱段能量百分比</div>
+                                                            <div class="right" style="padding: 9px 0px 7px 0;"><strong style="margin-top: 0px;font-size: 18px">0.7354</strong></div>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                        <li>
+                                                            <div class="left peity_bar_neutral" style="width: 90px;">2f谱段能量百分比</div>
+                                                            <div class="right" style="padding: 9px 0px 7px 0;"><strong style="margin-top: 0px;font-size: 18px">0.1671</strong></div>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                                <tr>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">大于2f能量百分比</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong style="margin-top: 0px;font-size: 18px">0.0204</strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">DBN-OCSVM诊断结果</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong style="margin-top: 0px;font-size: 18px"><span class="label label-success">正常</span></strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">电机状态</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong style="margin-top: 0px;font-size: 18px"><span class="label label-success">正常运行</span></strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                            </table>-->
+                                            <table style="width: 100%;margin-bottom: -20px;">
+                                                <tr>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">电机转速</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong style="margin-top: 0px;font-size: 18px">89r/min</strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                                            <li>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">电机电流</div>
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong style="margin-top: 0px;font-size: 18px">2.45A</strong></div>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                        <button id="" class="btn btn-primary" style="margin-left: 10px;margin-bottom: 11px;">刷新</button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                <tr style="height: 90px;">
+                                                    <td>
+                                                        <div class="control-group">
+                                                            <!--<label class="control-label">起始时间</label>-->
+                                                            <div class="controls input-append date form_datetime" data-date="2019-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii" data-link-field="dtp_input1">
+                                                                <input size="16" type="text" placeholder="起始时间" value="">
+                                                                <span class="add-on"><i class="icon-remove"></i></span>
+                                                                <span class="add-on"><i class="icon-th"></i></span>
+                                                            </div>
+                                                            <input type="hidden" id="dtp_input1" value="" /><br/>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="control-group">
+                                                            <!--<label class="control-label">结束时间</label>-->
+                                                            <div class="controls input-append date form_datetime" data-date="2019-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii" data-link-field="dtp_input1">
+                                                                <input size="16" type="text" placeholder="结束时间" value="">
+                                                                <span class="add-on"><i class="icon-remove"></i></span>
+                                                                <span class="add-on"><i class="icon-th"></i></span>
+                                                            </div>
+                                                            <input type="hidden" id="dtp_input2" value="" /><br/>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <!--<button id="search_last_day" class="btn btn-primary" style="margin-left: 10px;">前一天</button>-->
+                                                        <!--<button id="search_last_hour" class="btn btn-primary">前一小时</button>-->
+                                                        <button id="search_motor_data" class="btn btn-success" style="margin-left: 10px;margin-bottom: 30px;">查询</button>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <br>
+                                    <div id="speed" style="width: 800px;height: 300px;"></div>
+                                    <button id="last_page" class="btn btn-primary btn-mini" style="margin-left: 10px;margin-bottom: 10px;">上一页</button>
+                                    <button id="next_page" class="btn btn-primary btn-mini" style="margin-left: 10px;margin-bottom: 10px;">下一页</button>
+                                    <div id="current" style="width: 800px;height: 300px;"></div>
+
+                                    <!--<div class="chart"></div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--footer-->
+<div class="footerpage"></div>
+<!--footer over-->
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/getCookie.js"></script>
+<script src="js/getNowDate.js"></script>
+
+<script src="js/bootstrap-datepicker.js"></script>
+
+<script src="js/echarts.js"></script>
+
+<script type="text/javascript" src="js/city.js"></script>
+
+<script type="text/javascript" src="./js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+<script type="text/javascript" src="./js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script type="text/javascript">
+
+    /*公共部分*/
+    $(".headerpage").load("header.html");
+    $(".footerpage").load("footer.html");
+
+    $('.form_datetime').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        forceParse: 0
+        //showMeridian: 1
+    });
+
+    //省份城市控件
+    provinceCity();
+    function provinceCity() {
+        (function(){
+            var pHtmlStr = '';
+            for(var name in pc){
+                if(name == "江苏省"){
+                    pHtmlStr = pHtmlStr + '<option selected="selected">'+name+'</option>';
+                } else {
+                    pHtmlStr = pHtmlStr + '<option>'+name+'</option>';
+                }
+            }
+            $("#province").html(pHtmlStr);
+            $("#province").change(function(){
+                var pname = $("#province option:selected").text();
+                var pHtmlStr = '';
+                var cityList = pc[pname];
+                for(var index in cityList){
+                    if(cityList[index] == "苏州市"){
+                        pHtmlStr = pHtmlStr + '<option selected="selected">'+cityList[index]+'</option>';
+                    } else {
+                        pHtmlStr = pHtmlStr + '<option>'+cityList[index]+'</option>';
+                    }
+                }
+                $("#city").html(pHtmlStr);
+            });
+            $("#province").change();
+        })();
+    }
+
+    //默认显示江苏省苏州市的车库列表
+    showSZgarageList();
+
+    function showSZgarageList(){
+        var data3 = {
+            province: "江苏省",
+            city: "苏州市"
+        };
+
+        $.ajax({
+            url: '/admin/searchByArea',
+            type: 'post',
+//  dataType: 'json',
+            data: data3,
+            success: function (json) {
+                console.log(json);
+                var html = "";
+
+
+                for(var i=0;i<json.length;i++) {
+                    html = html + "<div class='well well-lg' style='padding: 10px;'><a href='#' id='"+ json[i].id + "'>"+ json[i]['address']
+                        + "</a>&nbsp;&nbsp;&nbsp;<a href='#'><i class='icon icon-facetime-video' style='float: right' id='"+ "camera_" + json[i].id + "'></i></a></div>";
+
+                }
+
+                $("#show_garage").html(html);
+                document.getElementById("1").style.color = "#F77825";
+            },
+            error: function () {
+                alert('false');
+            }
+        });
+    }
+
+    //重置城市列表
+    $("#reset").on('click', function () {
+        provinceCity();
+        showSZgarageList();
+    });
+
+    //搜索指定区域车库列表
+    $("#search_garage").on('click', function () {
+
+        var province = document.getElementById("province").value;
+        var city = document.getElementById("city").value;
+
+        // var province = "安徽省";
+        // var city = "芜湖市";
+        if (city == '' || province == '' ) {
+            alert("省份或城市不能为空");
+            return false;
+        } else {
+            var datas = {
+                province: province,
+                city: city
+            };
+            console.log(datas);
+            $.ajax({
+                url: '/admin/searchByArea',
+                type: 'post',
+                dataType: 'json',
+                data: datas,
+                success: function (json) {
+                    console.log(json);
+                    var html = "";
+                    if(json.length == 0){
+                        html = "<div class='well well-lg' style='padding: 10px;'>当前地区没有车库！</div>";
+                    } else {
+                        for(var i=0;i<json.length;i++) {
+                            html = html + "<div class='well well-lg' style='padding: 10px;'><a href='#' id='"+ json[i].id + "'>"+ json[i]['address']
+                                + "</a>&nbsp;&nbsp;&nbsp;<a href='#'><i class=\"icon icon-facetime-video\" style='float: right' id='"+ "camera_" + json[i].id +"'></i></a></div>";
+                        }
+                    }
+
+                    $("#show_garage").html(html);
+                },
+                error: function () {
+                    alert('false');
+                }
+            })
+        }
+        return false;
+    });
+
+
+    //默认显示车库1的基本信息与故障报警标志
+
+    showGarageBasicAndFault(1);
+
+    //根据车库id查找车库基本信息故障报警信息
+    function showGarageBasicAndFault($garage_id) {
+
+        //随机显示子车库个数
+        var subListHtml = "";
+        var subNums = randomNum(6,7);
+        for(var i=1;i<subNums;i++){
+            subListHtml = subListHtml +
+                "<tr>" +
+                "<td style='border: 0;'><a href='#' class='btn btn-primary btn-mini' id='sub_"+ i +"'>子车库 "+ i +"</a></td>" +
+                "</tr>";
+        }
+        $("#sub_list").html(subListHtml);
+
+        if($garage_id != 1){
+            document.getElementById("garage1_CarPlace").style.display = "none";
+            document.getElementById("other_CarPlace").style.display = "block";
+        } else {
+            document.getElementById("garage1_CarPlace").style.display = "block";
+            document.getElementById("other_CarPlace").style.display = "none";
+        }
+        var data1 = {
+            id: $garage_id
+        };
+        //显示车库的基本信息
+        $.ajax({
+            url: 'admin/get_garage_info_by_id',
+            type: 'post',
+//                    dataType: 'json',
+            data: data1,
+            success: function (json){
+                console.log(json);
+                //document.getElementById("all_garage").style.display="none";
+                //document.getElementById("every_garage").style.display="block";
+
+
+                $("#garage_id").html("车库" + json['id'] + "具体信息");
+                var $html1 = json['address'];
+
+                $("#garage_name").html($html1+"("+json['garageCode']+")");
+
+                //$("#garage_code").html(json['garageCode']);
+                $("#total_num").html(json['totalNum']);
+                $("#free_num").html(json['freeNum']);
+                $("#price_per_hour").html(json['pricePerHour']);
+
+            },
+            error: function(){
+                alert('false');
+            }
+        });
+        $.ajax({
+            url: 'admin/get_car_place',
+            type: 'post',
+//                    dataType: 'json',
+            data: data1,
+            success: function (json){
+                console.log(json);
+                var html = "<div class=\"span4\" style=\"width: 10%\">" +
+                    "</div>" +
+                    "<div class=\"span7\" style=\"width: 85%;\">" +
+                    "<table class=\"table table-striped\" style=\"border: 1px solid #ccc;\">";
+                var mark = 1;
+                for(var i=0;i<json.length;i++) {
+                    var lab;
+                    if(json[i]["status"] == 1){
+                        lab = "<span class='label label-important'>有车</span>";
+                    }else{
+                        lab = "<span class='label label-success'>空闲</span>";
+                    }
+                    if (mark==1){
+                        if(json[i]["cpNum"]==603){
+                            html = html + "<td>" + 603 + lab + "</td></tr>";
+                        }else {
+                            html = html +
+                                "<tr>" +
+                                "<td>" + json[i]["cpNum"] + lab + "</td>";
+                        }
+                        mark = 2;
+                    }else{
+                        if(json[i]["cpNum"]==602){
+                            html = html + "<td>" + 602 + lab + "</td>";
+                        }else{
+                            html = html +"<td>" + json[i]["cpNum"] + lab + "</td><td></td></tr>";
+                        }
+                        mark = 1;
+                    }
+                        // "<tr>" +
+                        // "<td>" + json[i]["cpNum"] + "</td>" +
+                        // "<td>" + lab + "</td>"+
+                        // "</tr>";
+                  //  $("#car_place").html(html);
+                }
+                html = html + "</table></div>";
+                $("#garage1_CarPlace").html(html);
+                console.log(html);
+            },
+            error: function(){
+                alert('false');
+            }
+        })
+
+        var authority = getCookie("authority");
+        var data2 = {
+            authority:authority
+        };
+
+        //显示车库故障报警标志
+        $.ajax({
+            url: '/admin/all_fault',
+            type: 'post',
+//  dataType: 'json',
+            data: data2,
+            success: function (json) {
+                console.log(json);
+                var label = new Array();
+                var warning = new Array("jiTing","guangDian","reJiGuoZai","duanDian",
+                    "fangSongLian","jiXian","guaGou","xiangXu");
+                for(var j=0;j<8;j++){
+                    console.log(json[$garage_id%4][warning[j]]);
+                    if(json[$garage_id%4][warning[j]] == 1){
+                        label[j] = "<span class='label label-important' style='font-size: 14px'>故障</span>";
+                    }else{
+                        label[j] = "<span class='label label-success' style='font-size: 14px'>正常</span>";
+                    }
+                }
+                //console.log(label);
+
+                $("#jiting").html(label[0]);
+                $("#guangdian").html(label[1]);
+                $("#rejiguozai").html(label[2]);
+                $("#duandian").html(label[3]);
+                $("#fangsonglian").html(label[4]);
+                $("#jixian").html(label[5]);
+                $("#guagou").html(label[6]);
+                $("#xiangxu").html(label[7]);
+            },
+            error: function () {
+                alert('false');
+            }
+        });
+    }
+
+    //默认显示电机数据曲线
+    var speedChart = echarts.init(document.querySelector('#speed'));
+    var currentChart = echarts.init(document.querySelector('#current'));
+    getRunningData();
+
+    function getRunningData(){
+        //默认显示车库1电机运行数据
+        $.ajax({
+            url: '/admin/motor_running_data',
+            type: 'post',
+//  dataType: 'json',
+            //data: datas,
+            success: function (data) {
+                console.log(data);
+                var runTime = new Array();
+                var I = new Array();
+                var n = new Array();
+                var maxCurrent = new Array();
+                var maxSpeed = new Array();
+                for(var i=0,j=data.length-1;i<data.length;i++,j--){
+                    runTime[i] = transferTime(data[j]['runTime']);
+                    I[i] = data[j]['iTrue'];
+                    n[i] = data[j]['nTrue'];
+                    maxCurrent[i] = 8.5;
+                    maxSpeed[i] = 120;
+                }
+
+                //myChart.hideLoading();    //隐藏加载动画
+                var speedOption = {
+                    //backgroundColor:'blue', //设置背景颜色
+                    title: {
+                        text: '电机转速'
+                    },
+                    tooltip: {},
+                    legend: {
+                        data:['转速(r/min)','转速阈值(r/min)']
+                    },
+                    xAxis: {
+                        axisLabel : {//坐标轴刻度标签的相关设置。
+                            formatter : function(params){
+                                var newParamsName = "";// 最终拼接成的字符串
+                                var paramsNameNumber = params.length;// 实际标签的个数
+                                var provideNumber = 10;// 每行能显示的字的个数
+                                var rowNumber = Math.ceil(paramsNameNumber / provideNumber);// 换行的话，需要显示几行，向上取整
+                                /**
+                                 * 判断标签的个数是否大于规定的个数， 如果大于，则进行换行处理 如果不大于，即等于或小于，就返回原标签
+                                 */
+                                // 条件等同于rowNumber>1
+                                if (paramsNameNumber > provideNumber) {
+                                    /** 循环每一行,p表示行 */
+                                    for (var p = 0; p < rowNumber; p++) {
+                                        var tempStr = "";// 表示每一次截取的字符串
+                                        var start = p * provideNumber;// 开始截取的位置
+                                        var end = start + provideNumber;// 结束截取的位置
+                                        // 此处特殊处理最后一行的索引值
+                                        if (p == rowNumber - 1) {
+                                            // 最后一次不换行
+                                            tempStr = params.substring(start, paramsNameNumber);
+                                        } else {
+                                            // 每一次拼接字符串并换行
+                                            tempStr = params.substring(start, end) + "\n";
+                                        }
+                                        newParamsName += tempStr;// 最终拼成的字符串
+                                    }
+
+                                } else {
+                                    // 将旧标签的值赋给新标签
+                                    newParamsName = params;
+                                }
+                                //将最终的字符串返回
+                                return newParamsName
+                            }
+                        },
+                        name:'时间',
+                        data: runTime
+                        //data:[]
+                    },
+                    yAxis: {
+                        name:'转速(r/min)'
+                    },
+                    series: [{
+                            name: '转速(r/min)',
+                            type: 'line',
+                            data: n
+                    }, {
+                            name: '转速阈值(r/min)',
+                            type: 'line',
+                            data: maxSpeed
+                    }
+                    ]
+                };
+
+                var currentOption = {
+                    //backgroundColor:'blue', //设置背景颜色
+                    title: {
+                        text: '电机电流'
+                    },
+                    tooltip: {},
+                    legend: {
+                        data:['电流(A)','电流阈值(A)']
+                    },
+                    xAxis: {
+                        axisLabel : {//坐标轴刻度标签的相关设置。
+                            formatter : function(params){
+                                var newParamsName = "";// 最终拼接成的字符串
+                                var paramsNameNumber = params.length;// 实际标签的个数
+                                var provideNumber = 10;// 每行能显示的字的个数
+                                var rowNumber = Math.ceil(paramsNameNumber / provideNumber);// 换行的话，需要显示几行，向上取整
+                                /**
+                                 * 判断标签的个数是否大于规定的个数， 如果大于，则进行换行处理 如果不大于，即等于或小于，就返回原标签
+                                 */
+                                // 条件等同于rowNumber>1
+                                if (paramsNameNumber > provideNumber) {
+                                    /** 循环每一行,p表示行 */
+                                    for (var p = 0; p < rowNumber; p++) {
+                                        var tempStr = "";// 表示每一次截取的字符串
+                                        var start = p * provideNumber;// 开始截取的位置
+                                        var end = start + provideNumber;// 结束截取的位置
+                                        // 此处特殊处理最后一行的索引值
+                                        if (p == rowNumber - 1) {
+                                            // 最后一次不换行
+                                            tempStr = params.substring(start, paramsNameNumber);
+                                        } else {
+                                            // 每一次拼接字符串并换行
+                                            tempStr = params.substring(start, end) + "\n";
+                                        }
+                                        newParamsName += tempStr;// 最终拼成的字符串
+                                    }
+
+                                } else {
+                                    // 将旧标签的值赋给新标签
+                                    newParamsName = params;
+                                }
+                                //将最终的字符串返回
+                                return newParamsName
+                            }
+                        },
+                        name:'时间',
+                        data: runTime
+                        //data:[]
+                    },
+                    yAxis: {
+                        name:'电流(A)'
+                    },
+                    series: [{
+                        name: '电流(A)',
+                        type: 'line',
+                        data: I,
+                        itemStyle:{
+                            lineStyle:{
+                                color:'#87CEFA'
+                            }
+                        }
+                    },{
+                        name: '电流阈值(A)',
+                        type: 'line',
+                        data: maxCurrent
+                    }]
+                };
+                //myChart.showLoading();
+                speedChart.setOption(speedOption);
+                currentChart.setOption(currentOption);
+
+            },
+            error: function () {
+                alert('false');
+            }
+
+        });
+    }
+
+
+    //生成从minNum到maxNum的随机数
+    function randomNum(minNum,maxNum){
+        switch(arguments.length){
+            case 1:
+                return parseInt(Math.random()*minNum+1,10);
+                break;
+            case 2:
+                return parseInt(Math.random()*(maxNum-minNum+1)+minNum,10);
+                break;
+            default:
+                return 0;
+                break;
+        }
+    }
+
+    //根据点击子车库按钮显示对应子车库车位状态
+    $("#sub_list").on('click', function (e) {
+        var ee = e.target;//取出来的元素对象
+        if (ee.tagName != "A")//判断是否是点击的按钮
+        {
+            return; //不是则返回
+        }
+        var sub_garage = ee.id; //是则传给车库id
+        var sub_id = sub_garage.substring(4);
+
+        var aList = document.getElementById("sub_list").getElementsByTagName("a");
+        for(var i =0;i < aList.length;i++){
+            aList[i].style.backgroundColor = "#006dcc"; //给所有a标签赋原色
+        }
+
+        ee.style.backgroundColor = "#04c";
+
+        $("#sub_name").html("子车库" + sub_id + " 车位状态");
+
+        var subHtml =
+            "<tr>" +
+                "<td>" + sub_id + "01&nbsp" + randomPlaceState() + "</td>" +
+                "<td>" + sub_id + "02&nbsp" + randomPlaceState() + "</td>" +
+            "</tr>" +
+            "<tr>" +
+                "<td>" + sub_id + "03&nbsp" + randomPlaceState() + "</td>" +
+                "<td>" + sub_id + "04&nbsp" + randomPlaceState() + "</td>" +
+            "</tr>" +
+            "<tr>" +
+                "<td>" + sub_id + "05&nbsp" + randomPlaceState() + "</td>" +
+                "<td>" + sub_id + "06&nbsp" + randomPlaceState() + "</td>" +
+            "</tr>" +
+            "<tr>" +
+                "<td>" + sub_id + "07&nbsp" + randomPlaceState() + "</td>" +
+                "<td>" + sub_id + "08&nbsp" + randomPlaceState() + "</td>" +
+            "</tr>" +
+            "<tr>" +
+                "<td>" + sub_id + "09&nbsp" + randomPlaceState() + "</td>" +
+                "<td>" + sub_id + "10&nbsp" + randomPlaceState() + "</td>" +
+            "</tr>" +
+            "<tr>" +
+                "<td>" + sub_id + "11&nbsp" + randomPlaceState() + "</td>" +
+                "<td>" + sub_id + "12&nbsp" + randomPlaceState() + "</td>" +
+            "</tr>";
+        $("#sub_car_place").html(subHtml);
+    });
+
+    function randomPlaceState() {
+        // 获取从1到10的随机整数 ，取0的概率极小。
+        if (Math.ceil(Math.random() * 10) <= 5) {
+            return "<span class='label label-success'>空闲</span>";
+        } else {
+            return "<span class='label label-important'>有车</span>";
+        }
+    }
+
+
+
+    //根据点击的车库显示对应车库信息
+    $("#show_garage").on('click', function (e) {
+        var ee = e.target;//取出来的元素对象
+        console.log(ee.tagName);
+        console.log(ee.id);
+        if(ee.tagName == "I"){
+            //console.log(ee.id.substring(7));
+            localStorage.setItem("garage_id",ee.id.substring(7));
+            window.location.href = "realtime_camera.html";
+        }
+        if(ee.tagName != "A")//判断是否是点击的按钮
+        {
+            return; //不是则返回
+        }
+        var $garage_id = ee.id; //是则传给车库id
+
+        var aList = document.getElementById("show_garage").getElementsByTagName("a");
+        for(var i =0;i < aList.length;i++){
+            aList[i].style.color = "#666"; //给所有a标签赋原色
+        }
+
+        ee.style.color="#F77825";
+
+        //ee.addClass("active");
+
+
+        localStorage.setItem("garage_id",$garage_id);
+
+        showGarageBasicAndFault($garage_id);
+
+        getRunningData();
+    });
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>echarts</title>
+    <!--  第一步骤 引入 ECharts 文件 -->
+    <!--<script type="text/javascript" src="js/echarts.min.js"></script>-->
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/echarts.js"></script>
+</head>
+<body>
+<!--
+    第二步骤  设置一个容器DOM 可以用来存放 echarts
+     找个容器宽600 高 400
+ -->
+<div id="main" style="width: 1200px;height: 800px;"></div>
+</body>
+<script type="text/javascript">
+    /*
+        第三步 基于准备好的dom，初始化echarts实例
+        这里记住 echarts 使用的是 init  联合起来就是  echarts.init
+        在 echarts.int() 方法里面 获取到 DOM 的 id
+        id，class 都可以
+    */
+    var myChart = echarts.init(document.querySelector('#main'));
+    /*
+        第四t步 指定图标配置项和数据
+        这里呢就是我们要展示在页面中的内容部分就是相当于人你让他长啥样
+        这里语法都是固定好的 var option 是 使用 option 选项
+    */
+    var option = {
+      //backgroundColor:'blue', //设置背景颜色
+        title: {
+            text: '电梯速度历史记录'
+        },
+        tooltip: {},
+        legend: {
+            data:['速度']
+        },
+        xAxis: {
+            data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+            //data:[]
+        },
+        yAxis: {},
+        series: [{
+            name: '速度',
+            type: 'line',
+            data: [5, 20, 36, 10, 10, 20]
+            //data:[]
+    }]
+    }
+    myChart.showLoading();
+
+    // var Times=[];
+    // var Speeds=[];
+    //
+    // $.ajax({
+    //     type : "post",
+    //     async : true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+    //     url : "runningData/info",    //请求发送到info处
+    //     data : {},
+    //     dataType : "json",        //返回数据形式为json
+    //     success : function(result) {
+    //         //请求成功时执行该函数内容，result即为服务器返回的json对象
+    //         if (result) {
+    //             for(var i=0;i<result.length;i++){
+    //                 Times.push(result[i].time);    //挨个取出类别并填入类别数组
+    //             }
+    //             for(var i=0;i<result.length;i++){
+    //                 Speeds.push(result[i].speed);    //挨个取出销量并填入销量数组
+    //             }
+    //             myChart.hideLoading();    //隐藏加载动画
+    //             myChart.setOption({        //加载数据图表
+    //                 xAxis: {
+    //                     data: Times
+    //                 },
+    //                 series: [{
+    //                     // 根据名字对应到相应的系列
+    //                     name: '速度',
+    //                     data: Speeds
+    //                 }]
+    //             });
+    //
+    //         }
+    //     },
+    //     error : function(errorMsg) {
+    //         //请求失败时执行该函数
+    //         alert("图表请求数据失败!");
+    //         myChart.hideLoading();
+    //     }
+    // })
+    /*
+        这里第五步 使用配置项和数据显示图表。
+        mychar 是我们把初始化 获取到的 DOM 赋给的值。
+        然后使用 setOption 这里注意Option 驼峰命名法 O 大写 是o 不是零
+        然后把我们 选项的图片 option 给 setOption 页面就显示了
+    */
+    myChart.setOption(option);
+    </script>
+</html>

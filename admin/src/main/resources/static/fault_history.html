@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>云端可视化监控管理系统</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="css/admin-style.css" />
+    <link rel="stylesheet" href="css/admin-media.css" class="skin-color" />
+
+    <!--<link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">-->
+    <link href="./css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="css/uniform.css" />
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>故障管理</a>
+            <a href="#" class="current">历史故障</a>
+        </div>
+        <!--<h1>故障历史信息</h1>-->
+    </div>
+
+    <div class="container-fluid">
+        <div class="row-fluid" id="history_fault" style="font-size: medium">
+            <div class="widget-box">
+                <div class="widget-title"> <span class="icon"> <i class="icon-th"></i> </span>
+                    <h5>历史故障</h5>
+                    <!--<span class="label label-success">excited</span>-->
+                </div>
+                <!--<div class="widget-content">-->
+                    <!--<table class="table table-bordered table-striped with-check">-->
+                <!--<div class="widget-content nopadding">-->
+                <div class="widget-content">
+                    <table style="width: 52%;;margin-bottom: -20px;">
+                        <tr>
+                            <td>
+                                <div class="control-group">
+                                    <label class="control-label">起始时间</label>
+                                    <div class="controls input-append date form_datetime" data-date="2019-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii" data-link-field="dtp_input1">
+                                        <!--<input size="16" type="text" value="" readonly>-->
+                                        <input size="16" type="text" value="">
+                                        <span class="add-on"><i class="icon-remove"></i></span>
+                                        <span class="add-on"><i class="icon-th"></i></span>
+                                    </div>
+                                    <input type="hidden" id="dtp_input1" value="" /><br/>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="control-group">
+                                    <label class="control-label">结束时间</label>
+                                    <div class="controls input-append date form_datetime" data-date="2019-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii" data-link-field="dtp_input1">
+                                        <input size="16" type="text" value="">
+                                        <span class="add-on"><i class="icon-remove"></i></span>
+                                        <span class="add-on"><i class="icon-th"></i></span>
+                                    </div>
+                                    <input type="hidden" id="dtp_input2" value="" /><br/>
+                                </div>
+                            </td>
+                            <td>
+                                <!--<button id="search_last_day" class="btn btn-primary" style="margin-right: 10px;">前一天</button>-->
+                                <!--<button id="search_last_hour" class="btn btn-primary" style="margin-right: 10px;">前一小时</button>-->
+                                <button id="search_motor_data" class="btn btn-success" style="margin-left: 10%;">查询</button>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <br>
+                    <!--<table class="table table-bordered table-striped">-->
+                    <table class="table table-bordered table-striped with-check" id="fault_history_table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="title-table-checkbox" name="title-table-checkbox" /></th>
+                                <!--<th><input type="checkbox" name="title-table-checkbox" /></th>-->
+                                <th>故障编号</th>
+                                <th>车库编号</th>
+                                <th>车库地址</th>
+                                <th>解除状态</th>
+                                <th>故障类型</th>
+                                <th>是否检修</th>
+                                <th>上报时间</th>
+                                <th>解除时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history_fault_list">
+
+                        </tbody>
+                    </table>
+                    <div style="margin-right: 87%;">
+                        <a href="#myAlert" data-toggle="modal"><button id="deleteSelected" class="btn btn-danger">批量删除</button></a>
+                        <a href="#printAlert" data-toggle="modal"><button id="print" class="btn btn-primary">批量导出</button></a>
+                    </div>
+
+                </div>
+                <div id="myAlert" class="modal hide">
+                    <div class="modal-header">
+                        <button data-dismiss="modal" class="close" type="button">×</button>
+                        <h3>历史故障管理</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>是否确认删除该历史故障记录?</p>
+                    </div>
+                    <div class="modal-footer"> <a data-dismiss="modal" class="btn btn-danger" href="#" id="confirmDelete">删除</a> <a data-dismiss="modal" class="btn" href="#">取消</a> </div>
+                </div>
+
+                <div id="printAlert" class="modal hide">
+                    <div class="modal-header">
+                        <button data-dismiss="modal" class="close" type="button">×</button>
+                        <h3>历史故障导出pdf</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>是否确认导出历史故障记录?</p>
+                    </div>
+                    <div class="modal-footer"> <a data-dismiss="modal" class="btn btn-primary" href="#" id="confirmPrint">导出</a> <a data-dismiss="modal" class="btn" href="#">取消</a> </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<!--footer-->
+<div class="footerpage"></div>
+<!--footer over-->
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/getCookie.js"></script>
+<script src="js/getNowDate.js"></script>
+
+<script src="js/maruti.tables.js"></script>
+<script src="js/jquery.uniform.js"></script>
+<script src="js/select2.min.js"></script>
+<script src="js/jquery.dataTables.min.js"></script>
+<script src="js/maruti.js"></script>
+
+<script src="jspdf/html2canvas.js"></script>
+<script src="jspdf/jsPdf.debug.js"></script>
+
+<script src="js/excel/xlsx.full.min.js"></script>
+<!--<script lang="javascript" src="js/xlsx.core.min.js"></script>-->
+<!--<script type="text/javascript" src="js/Blob.js"></script>-->
+<script src="js/excel/FileSaver.js"></script>
+<script src="js/excel/Export2Excel.js"></script>
+
+
+<script type="text/javascript" src="./js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+<script type="text/javascript" src="./js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<script type="text/javascript">
+    /*公共部分*/
+    $(".headerpage").load("header.html");
+    $(".footerpage").load("footer.html");
+
+    var html = "";
+
+    $('.form_datetime').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        forceParse: 0
+        //showMeridian: 1
+    });
+
+    //显示历史故障列表
+    $.ajax({
+        url: '/admin/all_history_fault',
+        type: 'post',
+        //dataType: 'json',
+        data: datas,
+        success: function (json) {
+            console.log(json);
+            for(var i = 0;i < json.length;i++){
+                var jiechuState = '';
+                var jianxiuState = '';
+                var jiechuTime = '';
+                if(json[i].jiechuState == 1){
+                    jiechuState = '<span class="label label-success">已解除</span>';
+                }else{
+                    jiechuState = '<span class="label label-important">未解除</span>';
+                }
+
+                if(json[i].jianxiuState == 1){
+                    jianxiuState = '<span class="label label-success">是</span>';
+                }else{
+                    jianxiuState = '<span class="label label-important">否</span>';
+                }
+
+                if(json[i].jiechuTime == null){
+                    jiechuTime = '';
+                }else{
+                    jiechuTime = transferTime(json[i].jiechuTime);
+                }
+
+                html = html +
+                    "<tr>" +
+                    "<td><input type='checkbox' name='faultList' value='"+ json[i].id +"'/></td>" +
+                    "<td>"+ json[i].faultId +"</td>" +
+                    "<td>"+ json[i].garageCode +"</td>" +
+                    "<td>"+ json[i].address +"</td>" +
+                    "<td>"+ jiechuState +"</td>" +
+                    "<td>"+ json[i].faultType +"</td>" +
+                    "<td>"+ jianxiuState +"</td>" +
+                    "<td>"+ transferTime(json[i].submitTime) +"</td>" +
+                    "<td>"+ jiechuTime +"</td>" +
+                    "<td><a href=\"#myAlert\" data-toggle=\"modal\" class=\"btn btn-danger btn-mini\" id='" + json[i].id + "'>删除</a>" +
+                    "</tr>";
+            }
+            $("#history_fault_list").html(html);
+        },
+        error: function () {
+            alert('false');
+        }
+    });
+
+    //删除选中项
+    //$("#deleteSelected").on('click', function () {
+    document.getElementById("confirmDelete").onclick= function(){
+        selectDelete();
+    };
+
+    function selectDelete() {
+        var itemIds = "";
+        var items = document.getElementsByName("faultList");
+        var flag = false;
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].checked) {
+                itemIds += items[i].value + ";";
+                flag = true; //表示复选框有被选中的
+            }
+        }
+        if (flag) {
+            alert(itemIds);
+        }
+    }
+
+    //$("#fault_history_table").modal("show");
+
+    //导出选中项
+    document.getElementById("confirmPrint").onclick= function(){
+        /*html2canvas($("#fault_history_table"), {
+            onrendered:function(canvas) {
+                var pageData = canvas.toDataURL('image/jpeg', 1.0);
+                var pdf = new jsPDF('', 'pt', 'a4');
+                pdf.addImage(pageData, 'JPEG', 0, 0, 595.28, 592.28/canvas.width * canvas.height );
+                pdf.save('历史故障信息_' + getCurrentDate() + '.pdf');
+            }
+        })*/
+
+        export_table_to_excel('fault_history_table','历史故障信息_' + getCurrentDate());
+    };
+
+</script>
+
+</body>
+
+</html>

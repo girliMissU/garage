@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>云端可视化监控管理系统</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="css/admin-style.css" />
+    <link rel="stylesheet" href="css/switch.css" />
+    <link rel="stylesheet" href="css/admin-media.css" class="skin-color" />
+
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>实时监控</a>
+            <a href="#" class="current">车库实时监控</a>
+        </div>
+        <!--<h1>车库实时监控</h1>-->
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="widget-box" id="all_garage" style="display:block">
+                    <div class="widget-title"><span class="icon"><i class="icon-signal"></i></span>
+                        <h5>车库实时监控</h5>
+                        <div class="buttons">
+                            <a href="person_detection.html" class="btn btn-mini"><i class="icon-user"></i>视频行人检测</a>
+                            <a href="realtime_history_detection.html" class="btn btn-mini"><i class="icon-picture"></i>检测历史记录</a>
+                        </div>
+                    </div>
+                    <div class="widget-content" id="show_garage">
+                        <table style="width: 100%;">
+                            <tr>
+                                <ul class="stat-boxes stat-boxes2" style="top: 3px">
+                                    <li>
+                                        <div class="left peity_bar_neutral" style="font-size: 18px;">车库行人状态</div>
+                                            <div class="right" style="padding: 9px 0px 7px 0;">
+                                            <strong id="personState" style="margin-top: -2px;font-size: 18px">
+                                                <!--<span class='label label-success' style='font-size: 16px'>无人</span>-->
+                                            </strong>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h4 id="">行人目标检测结果</h4>
+                                    <img src="/upload/personDetection.jpg" id="currentImage1">
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+                    <canvas style="align-content: center"></canvas>
+                </div>
+
+                <div id="myAlert" class="modal hide">
+                    <div class="modal-header">
+                        <button data-dismiss="modal" class="close" type="button">×</button>
+                        <h3>当前车库图片</h3>
+                    </div>
+                    <div class="modal-body">
+                        <image id="currentImage"></image>
+                    </div>
+                    <div class="modal-footer"> <a data-dismiss="modal" class="btn" href="#">返回</a> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--footer-->
+<div class="footerpage"></div>
+<!--footer over-->
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/getCookie.js"></script>
+<!--<script src="js/ezuikit.js"></script>-->
+<script src="js/html2canvas.min.js"></script>
+<script src="js/getNowDate.js"></script>
+<script type="text/javascript">
+    /*公共部分*/
+    $(".headerpage").load("header.html");
+    $(".footerpage").load("footer.html");
+
+    //获取当前日期
+    function getCurrentDate() {
+        var date = new Date();
+        var sign1 = "-";
+        var year = date.getFullYear(); // 年
+        var month = date.getMonth() + 1; // 月
+        var day  = date.getDate(); // 日
+
+        // 给一位数数据前面加 “0”
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (day >= 0 && day <= 9) {
+            day = "0" + day;
+        }
+        var currentdate = year + sign1 + month + sign1 + day;
+        return currentdate;
+    }
+    //获取当前时间
+    function getCurrentTime() {
+        var date = new Date();
+        var sign2 = "_";
+        var hour = date.getHours(); // 时
+        var minutes = date.getMinutes(); // 分
+        var seconds = date.getSeconds(); //
+        // 给一位数数据前面加 “0”
+
+        if (hour >= 0 && hour <= 9) {
+            hour = "0" + hour;
+        }
+        if (minutes >= 0 && minutes <= 9) {
+            minutes = "0" + minutes;
+        }
+        if (seconds >= 0 && seconds <= 9) {
+            seconds = "0" + seconds;
+        }
+        var currentTime = hour + sign2 + minutes + sign2 + seconds;
+        return currentTime;
+    }
+
+    var $garage_id = localStorage.getItem("garage_id");
+
+    var data1 = {
+        id: $garage_id
+    };
+
+
+
+    //自动截图
+    /*setInterval(function (){
+        if(flag == 1 && ((getCurrentTime().substr(0,2) >= 7 && getCurrentTime().substr(0,2) < 9) ||
+            (getCurrentTime().substr(0,2) >= 16 && getCurrentTime().substr(0,2) < 18))){
+            screen();
+        }
+        // if(flag == 1){
+        //     screen();
+        // }
+    },60000);*/
+
+    setInterval(function (){
+        console.log("刷新中...")
+        //刷新检测图片
+        document.getElementById("currentImage1").src = "/upload/personDetection.jpg"+"?t=" + Math.random();
+        //刷新行人检测结果
+        getIfPerson();
+    },5000);
+
+    //手动截图
+    $("#capture").on('click',function () {
+        //screen();
+        getImage();
+    });
+
+    //行人检测
+    $("#person_detection").on('click',function () {
+        window.location.href = "person_detection.html";
+    });
+
+    //通过http接口访问萤石云后台拿到图片并保存到garage_img文件夹下
+    function getImage() {
+        var datas = {
+            imgName:getCurrentDate() + ' ' + getCurrentTime() + '.png'
+        };
+
+        $.ajax({
+            url: 'admin/getAndSaveImage',
+            type: 'post',
+            dataType: 'json',
+            data: datas,
+            success: function (json){
+                console.log(json);
+                document.getElementById("currentImage").src = json["image"];
+            },
+            error: function(){
+                alert('false');
+            }
+        });
+
+    }
+
+    function getIfPerson() {
+
+        $.ajax({
+            url: 'admin/getIfPerson',
+            type: 'post',
+            //dataType: 'json',
+            //data: datas,
+            success: function (json){
+                console.log(json);
+                var state;
+                if(json == "1"){
+                    state = "<span class='label label-important' style='font-size: 16px'>有人</span>";
+                } else {
+                    state = "<span class='label label-success' style='font-size: 16px'>无人</span>";
+                }
+                $("#personState").html(state);
+                //document.getElementById("currentImage1").src = json;
+            },
+            error: function(){
+                alert('false');
+            }
+        });
+
+    }
+
+</script>
+</body>
+
+</html>

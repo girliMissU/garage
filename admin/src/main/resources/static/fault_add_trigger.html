@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>云端可视化监控管理系统</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="css/admin-style.css" />
+    <link rel="stylesheet" href="css/admin-media.css" class="skin-color" />
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>故障管理</a>
+            <a href="#" class="current">添加触发器</a>
+        </div>
+        <!--<h1>添加触发器</h1>-->
+    </div>
+
+    <div class="container-fluid">
+        <div class="row-fluid" id="manager_add" style="font-size: large">
+            <div class="span12">
+                <div class="widget-box" id="all_garage" style="display:block">
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-signal"></i>
+                        </span>
+                        <h5>添加触发器</h5>
+                        <div class="buttons"><a href="fault_trigger.html" class="btn btn-mini"><i class="icon-list"></i>触发器列表</a></div>
+                    </div>
+                    <div class="widget-content">
+                        <form action="#"  method="get" class="form-horizontal">
+                            <div class="control-group">
+                                <label class="control-label">车库编号 :</label>
+                                <div class="controls">
+                                    <input id="garage_id" type="text" class="span20" placeholder="请填写车库编号" />
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">触发器名称 :</label>
+                                <div class="controls">
+                                    <input id="fault_name" type="text" class="span20" placeholder="请填写触发器名称" />
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">数据点 :</label>
+                                <div class="controls">
+                                    <input id="data_point" type="text" class="span20" placeholder="请填写数据点" />
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">触发条件:</label>
+                                <div class="controls">
+                                    <input id="trigger_condition" type="text" class="span20" placeholder="请填写触发条件" />
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">报警方式 :</label>
+                                <div class="controls">
+                                    <input id="alarm_way" type="text" class="span20" placeholder="请填写报警方式" />
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">联系人编号:</label>
+                                <div class="controls">
+                                    <input id="contact_id" type="text" class="span20" placeholder="请填写联系人编号" />
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button id="submit" type="submit" class="btn btn-success">保存并提交</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid" id="no_authority">
+            <h1>
+                您没有该权限！
+            </h1>
+        </div>
+
+    </div>
+</div>
+
+<!--footer-->
+<div class="footerpage"></div>
+<!--footer over-->
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/getCookie.js"></script>
+
+<script type="text/javascript">
+    /*公共部分*/
+    $(".headerpage").load("header.html");
+    $(".footerpage").load("footer.html");
+
+    if(authority == 0){
+        document.getElementById("manager_add").style.display="block";
+        document.getElementById("no_authority").style.display="none";
+    }else{
+        document.getElementById("manager_add").style.display="none";
+        document.getElementById("no_authority").style.display="block";
+    }
+
+    $("#submit").on('click', function () {
+
+        var $garage_id = $("#garage_id").val();
+        var $fault_name = $("#fault_name").val();
+        var $data_point = $("#data_point").val();
+        var $trigger_condition = $("#trigger_condition").val();
+        var $alarm_way = $("#alarm_way").val();
+        var $contact_id = $("#contact_id").val();
+
+        if ($data_point == '' || $garage_id == '' || $fault_name == '' || $trigger_condition == '' || $alarm_way  == '' || $contact_id  == '') {
+            alert("所填项不能为空");
+            return false;
+        } else {
+            var datas = {
+                trigger_condition:$trigger_condition,
+                garage_id:$garage_id,
+                fault_name:$fault_name,
+                data_point:$data_point,
+                alarm_way:$alarm_way,
+                contact_id:$contact_id
+
+            };
+            console.log(datas);
+            $.ajax({
+                url: '/admin/add_trigger',
+                type: 'post',
+                dataType: 'json',
+                data: datas,
+                success: function (json) {
+                    console.log(json);
+                    if (json.code == 1) {
+                        alert('添加触发器失败');
+                    } else {
+                        alert("添加触发器成功");//注册成功
+                    }
+                },
+                error: function () {
+                    alert('false');
+                }
+            })
+        }
+        return false;
+    })
+</script>
+
+</body>
+
+</html>

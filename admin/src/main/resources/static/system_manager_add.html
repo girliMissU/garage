@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>云端可视化监控管理系统</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="css/admin-style.css" />
+    <link rel="stylesheet" href="css/admin-media.css" class="skin-color" />
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>系统管理</a>
+            <a href="#" class="current">管理员注册</a>
+        </div>
+        <!--<h1>管理员注册</h1>-->
+    </div>
+
+    <div class="container-fluid">
+        <div class="row-fluid" id="manager_add" style="font-size: large">
+            <div class="span12">
+                <div class="widget-box" id="all_garage" style="display:block">
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-signal"></i>
+                        </span>
+                        <h5>管理员注册</h5>
+                        <div class="buttons"><a href="system_manager_view.html" class="btn btn-mini"><i class="icon-user"></i>管理员列表</a></div>
+                    </div>
+                    <div class="widget-content">
+                        <form action="#"  method="get" class="form-horizontal">
+                            <div class="control-group">
+                                <label class="control-label">用户名 :</label>
+                                <div class="controls">
+                                    <input id="manager" type="text" class="span20" placeholder="请填写用户名" />
+                                </div>
+                            </div>
+                            <!--<div class="control-group">
+                                <label class="control-label">姓名 :</label>
+                                <div class="controls">
+                                    <input id="name" type="text" class="span20" placeholder="请填写真实姓名" />
+                                </div>
+                            </div>-->
+                            <div class="control-group">
+                                <label class="control-label">密码 :</label>
+                                <div class="controls">
+                                    <input id="password" type="password" class="span20" placeholder="请填写密码" />
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">确认密码 :</label>
+                                <div class="controls">
+                                    <input id="password2" type="password" class="span20" placeholder="请再次填写密码" />
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">权限 :</label>
+                                <div class="controls" style="float: left;margin-left: 40px;">
+                                    <label><input type="radio" name="radios" /> 总管理员</label>
+                                    <label><input type="radio" name="radios" /> 车库管理</label>
+                                    <label><input type="radio" name="radios" /> 普通用户</label>
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">车库编号 :</label>
+                                <div class="controls">
+                                    <select style="float: left;width: 300px;margin-left: 18.5px;" id="garageList">
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!--<div class="control-group">
+                                <label class="control-label">Multiple Select input</label>
+                                <div class="controls">
+                                    <select multiple>
+                                        <option>First option</option>
+                                        <option selected>Second option</option>
+                                        <option>Third option</option>
+                                        <option>Fourth option</option>
+                                        <option>Fifth option</option>
+                                        <option>Sixth option</option>
+                                        <option>Seventh option</option>
+                                        <option>Eighth option</option>
+                                    </select>
+
+                                </div>
+                            </div>-->
+
+                            <!--<div class="control-group">
+                                <label class="control-label">权限:</label>
+                                <div class="controls">
+                                    <input id="authority" type="text" class="span20" placeholder="请填写管理员权限" />
+                                </div>
+                            </div>-->
+
+                            <div class="control-group">
+                                <label class="control-label">备注：</label>
+                                <div class="controls">
+                                    <textarea class="span20"  placeholder="请填写备注内容" ></textarea>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button id="submit" type="submit" class="btn btn-success">保存并提交</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid" id="no_authority">
+            <h1>
+                您没有该权限！
+            </h1>
+        </div>
+
+    </div>
+</div>
+
+<!--footer-->
+<div class="footerpage"></div>
+<!--footer over-->
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/getCookie.js"></script>
+
+<script type="text/javascript">
+    /*公共部分*/
+    $(".headerpage").load("header.html");
+    $(".footerpage").load("footer.html");
+
+    if(authority == 0){
+        document.getElementById("manager_add").style.display="block";
+        document.getElementById("no_authority").style.display="none";
+    }else{
+        document.getElementById("manager_add").style.display="none";
+        document.getElementById("no_authority").style.display="block";
+    }
+
+    var data = {
+        authority: "0"
+    };
+
+    $.ajax({
+        url: '/admin/get_all_garage_info',
+        type: 'post',
+//  dataType: 'json',
+        data: data,
+        success: function (json) {
+            console.log(json);
+            var html = "";
+
+
+            for(var i=0;i<json.length;i++) {
+                html = html + "<option>"+ json[i]['address'] +"</option>";
+            }
+
+            $("#garageList").html(html);
+        },
+        error: function () {
+            alert('false');
+        }
+    });
+
+    $("#submit").on('click', function () {
+        var $username = $("#manager").val();
+        var $password = $("#password").val();
+        var $password2 = $("#password2").val();
+        var $authority = $("#authority").val();
+        console.log($username);
+        console.log($password);
+        console.log($password2);
+        if ($username == '' || $password == '' || $password2 == '' || $authority == '') {
+            alert("用户名,密码及权限不能为空");
+            return false;
+        } else if($password != $password2){
+            alert("两次密码不一样");
+            return false;
+        } else {
+            var datas = {
+                username: $username,
+                password: $password,
+                authority:$authority
+            };
+            console.log(datas);
+            $.ajax({
+                url: '/admin/add_manager',
+                type: 'post',
+                dataType: 'json',
+                data: datas,
+                success: function (json) {
+                    console.log(json);
+                    if (json.code == -1) {
+                        alert('用户名已注册');
+                    } else {
+                        alert("添加管理员成功");//注册成功
+                    }
+                },
+                error: function () {
+                    alert('false');
+                }
+            })
+        }
+        return false;
+    })
+</script>
+
+</body>
+
+</html>

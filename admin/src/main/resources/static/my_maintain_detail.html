@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>云端可视化监控管理系统</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="css/admin-style.css" />
+    <link rel="stylesheet" href="css/admin-media.css" class="skin-color" />
+    <link href="./css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>维保服务</a>
+            <a href="#" class="current">编辑工单</a>
+        </div>
+        <!--<h1>查看我的工单</h1>-->
+    </div>
+
+    <div class="container-fluid">
+        <div class="row-fluid" id="question_detail">
+            <div class="widget-box">
+                <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-file"></i>
+                        </span>
+                    <h5>工单基本信息</h5>
+                    <div class="buttons"><a href="my_maintain.html" class="btn btn-mini" id="return"><i class="icon-home"></i>返回</a></div>
+                </div>
+                <div class="widget-content">
+                    <table class="table table-bordered">
+                        <thead>
+	                        <tr>
+								<th>工单编号</th>
+                                <th>车库编号</th>
+                                <th>使用单位</th>
+                                <th>保养类型</th>
+                                <th>保养日期</th>
+                                <th>完成时间</th>
+                                <th>状态</th>
+                                <th>维保单位</th>
+                                <th>维保人员</th>
+                                <th>建单人</th>
+	                        </tr>
+                        </thead>
+                        <tbody id="maintain_id_detail">
+                        <tr>
+                            <td id="maintain_id"></td>
+                            <td id="garage_id"></td>
+                            <td id="address"></td>
+                            <td id="contents"></td>
+                            <td id="start_date"></td>
+                            <td id="end_date">
+		                        <div class="controls input-append date form_datetime" data-date="2019-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii" data-link-field="dtp_input1">
+		                            <input size="16" type="text" placeholder="完成时间" value="" id="endTime">
+		                            <span class="add-on"><i class="icon-remove"></i></span>
+		                            <span class="add-on"><i class="icon-th"></i></span>
+		                        </div>
+                            </td>
+                            <td id="status"></td>
+                            <td id="mt_company"></td>
+                            <td id="operator"></td>
+                            <td id="manager"></td>
+                        </tr>
+                        </tbody>
+                        
+                    </table>
+                </div>
+                <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-file"></i>
+                        </span>
+                    <h5>保养过程详细记录</h5>
+                </div>
+                <div class="widget-content" style ="text-align: left">
+					<form role="form">
+					  <div class="form-group">
+					    <textarea class="form-control" rows="5" style="width: -webkit-fill-available" id="log" readonly>
+					    </textarea>
+					  </div>
+					</form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--footer-->
+<div class="footerpage"></div>
+<!--footer over-->
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/getNowDate.js"></script>
+<script src="js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="./js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+<script type="text/javascript" src="./js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script type="text/javascript">
+    /*公共部分*/
+    $(".headerpage").load("header.html");
+    $(".footerpage").load("footer.html");
+    $('.form_datetime').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        forceParse: 0
+        //showMeridian: 1
+    });
+    //工单详情页
+    $(document).ready(function () {
+        var $maintain_id = localStorage.getItem("maintain_id");
+        var datas = {
+            id: $maintain_id
+        };
+        $.ajax({
+            url: 'admin/get_maintenance_by_id',
+            type: 'post',
+//                    dataType: 'json',
+            data: datas,
+            success: function (json){
+                console.log(json);
+                $("#maintain_id").html(json.id);
+                $("#garage_id").html(json.garageId);
+                $("#address").html(json.address);
+                $("#contents").html(json.content);
+                $("#start_date").html(transferTime(json.startDate));
+				$("#end_date").html(transferTime(json.endDate));
+				$("#mt_company").html(json.maintainCompany);
+                $("#operator").html(json.operator);
+                $("#status").html(json.status);
+                $("#manager").html(json.manager);
+                $("#log").html(json.log);
+            },
+            error: function(){
+                alert('false');
+            }
+        });
+    });
+
+    //返回
+    $("#return").on('click', function (){
+        window.location.href = "my_maintain.html";
+    });
+
+</script>
+
+</body>
+
+</html>

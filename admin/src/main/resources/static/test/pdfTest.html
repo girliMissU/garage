@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>无标题文档</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+
+<body>
+<!-- // 日志统计  begin -->
+<div class="modal" id="log-statistics-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-create" style="width: 1300px; margin-left: -650px\9;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×</button>
+                <h4 class="modal-title">日志统计</h4>
+            </div>
+            <form method="post" class="form-horizontal" action="">
+                <div class="modal-body">
+                    <!-- // modal-body begin -->
+
+                    <table class="table table-bordered table-hover" id="log-statistics-charts" style="background: #ffffff;">
+                        <tbody>
+                        <tr>
+                            <td width="33%">
+                                <div id="chart1" style="height: 400px;"></div>
+                            </td>
+                            <td>
+                                <div id="chart2" style="height: 400px;"></div>
+                            </td>
+                            <td width="33%">
+                                <div id="chart3" style="height: 400px;"></div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- modal-body end // -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="export-pdf">导出pdf</button>
+                    <button class="btn btn-primary" type="button" data-dismiss="modal">关 闭</button>
+                </div>
+            </form>
+        </div>
+        <!-- /Modal -->
+    </div>
+</div>
+<!-- 日志统计   end // -->
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../jspdf/html2canvas.js"></script>
+<script src="../jspdf/jsPdf.debug.js"></script>
+<script>
+    $("#log-statistics-modal").modal("show");
+    document.getElementById("export-pdf").onclick= function(){
+        html2canvas($("#log-statistics-charts"), {
+            onrendered:function(canvas) {
+                var pageData = canvas.toDataURL('image/jpeg', 1.0);
+                var pdf = new jsPDF('', 'pt', 'a4');
+                pdf.addImage(pageData, 'JPEG', 0, 0, 595.28, 592.28/canvas.width * canvas.height );
+                pdf.save('日志统计.pdf');
+            }
+        })
+    }
+</script>
+</body>
+</html>

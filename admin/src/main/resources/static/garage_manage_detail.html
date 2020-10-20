@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>云端可视化监控管理系统</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="css/admin-style.css" />
+    <link rel="stylesheet" href="css/switch.css" />
+    <link rel="stylesheet" href="css/admin-media.css" class="skin-color" />
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>车库管理</a>
+            <a href="#" class="current">在线车库管理</a>
+        </div>
+        <!--<h1>在线车库管理</h1>-->
+    </div>
+
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <!--<div class="span6">-->
+            <div class="widget-box" id="all_garage" style="display:block">
+                    <div class="widget-title"><span class="icon"><i class="icon-signal"></i></span>
+                        <h5>车库信息管理</h5>
+                        <div class="buttons"><a href="garage_manage_index.html" class="btn btn-mini"><i class="icon-list"></i>车库列表</a></div>
+                    </div>
+                    <div class="widget-content" id="show_garage">
+                        <form action="#"  method="get" class="form-horizontal">
+
+                            <div>
+                                <h4 style="text-align: left;">基本信息</h4>
+                            </div>
+
+                            <table style="    width: 100%;">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="control-group">
+                                                <label class="control-label">车库编号 :</label>
+                                                <div class="controls" id="garage_code"></div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="control-group">
+                                                <label class="control-label">车库地址 :</label>
+                                                <div class="controls" id="address1">
+                                                    <input id="address" type="text" class="span20" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="control-group">
+                                                <label class="control-label">总车位数量 :</label>
+                                                <div class="controls" id="total_num1">
+                                                    <input id="total_num" type="text" class="span20" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="control-group">
+                                                <label class="control-label">空闲车位数量 :</label>
+                                                <div class="controls" id="free_num1">
+                                                    <input id="free_num" type="text" class="span20" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="control-group">
+                                                <label class="control-label">每小时停车费用:</label>
+                                                <div class="controls" id="price_per_hour1">
+                                                    <input id="price_per_hour" type="text" class="span20" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!--<div class="control-group">
+                                <label class="control-label">省份:</label>
+                                <div class="controls" id="province1">
+                                    <input id="province" type="text" class="span20" />
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">城市:</label>
+                                <div class="controls" id="city1">
+                                    <input id="city" type="text" class="span20" />
+                                </div>
+                            </div>-->
+
+                            <h4 style="text-align: left;">车库联系人</h4>
+                            <div class="control-group">
+                                <label class="control-label">联系人:</label>
+                                <div class="controls">
+                                    <select id="contactList" onchange="contactChange()" style="float: left;    margin-left: 0.58%;">
+                                        <option value="1">李凡</option>
+                                        <option value="2">岳友</option>
+                                        <option value="3">孟祥波</option>
+                                        <option value="0">添加新联系人</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="contactModel" style="display: none">
+                                <table style="width: 100%">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="control-group">
+                                                    <label class="control-label">姓名 :</label>
+                                                    <div class="controls">
+                                                        <input id="manager" type="text" class="span20" placeholder="请填写姓名" />
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="control-group">
+                                                    <label class="control-label">手机号 :</label>
+                                                    <div class="controls">
+                                                        <input id="phone_num" type="text" class="span20" placeholder="请填写手机号码" />
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="control-group">
+                                                    <label class="control-label">邮箱:</label>
+                                                    <div class="controls">
+                                                        <input id="email" type="text" class="span20" placeholder="请填写邮箱" />
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="control-group">
+                                                    <label class="control-label">备注:</label>
+                                                    <div class="controls">
+                                                        <input id="exts" type="text" class="span20" placeholder="请填写备注" />
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                            <h4 style="text-align: left;">触发器</h4>
+                            <div class="control-group">
+                                <label class="control-label">是否添加触发器:</label>
+                                <div class="controls">
+                                    <select id="triggerOption" onchange="triggerChange()" style="float: left;margin-left: 0.58%;">
+                                        <option value="0">否</option>
+                                        <option value="1">是</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="triggerModel" style="display: none">
+                                <table style="width: 100%">
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="control-group">
+                                                <label class="control-label">触发器名称 :</label>
+                                                <div class="controls">
+                                                    <input id="fault_name" type="text" class="span20" placeholder="请填写触发器名称" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="control-group">
+                                                <label class="control-label">数据点 :</label>
+                                                <div class="controls">
+                                                    <input id="data_point" type="text" class="span20" placeholder="请填写数据点" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="control-group">
+                                                <label class="control-label">触发条件:</label>
+                                                <div class="controls">
+                                                    <input id="trigger_condition" type="text" class="span20" placeholder="请填写触发条件" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="control-group">
+                                                <label class="control-label">报警方式:</label>
+                                                <div class="controls">
+                                                    <input id="alarm_way" type="text" class="span20" placeholder="请填写报警方式" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!--<div class="control-group">
+                                <label class="control-label">联系人编号:</label>
+                                <div class="controls">
+                                    <input id="contact_id" type="text" class="span20" placeholder="请填写联系人编号" />
+                                </div>
+                            </div>-->
+
+                            <div class="form-actions">
+                                <button id="submit1" type="submit" class="btn btn-success">保存并提交</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+<!--footer-->
+<div class="footerpage"></div>
+<!--footer over-->
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/getCookie.js"></script>
+
+<script type="text/javascript">
+    /*公共部分*/
+    $(".headerpage").load("header.html");
+    $(".footerpage").load("footer.html");
+
+    function contactChange(){
+        var objS = document.getElementById("contactList");
+        var value = objS.options[objS.selectedIndex].value;
+        var contactModel = document.getElementById("contactModel");
+        if(value == 0){
+            contactModel.style.display = "block";
+        } else {
+            contactModel.style.display = "none";
+        }
+    }
+
+    function triggerChange(){
+        var objS = document.getElementById("triggerOption");
+        var value = objS.options[objS.selectedIndex].value;
+        var contactModel = document.getElementById("triggerModel");
+        if(value == 1){
+            contactModel.style.display = "block";
+        } else {
+            contactModel.style.display = "none";
+        }
+    }
+
+    var garage_id = localStorage.getItem("garage_id");
+    var datas = {
+        id: garage_id
+    };
+    $.ajax({
+        url: 'admin/get_garage_info_by_id',
+        type: 'post',
+//                    dataType: 'json',
+        data: datas,
+        success: function (json){
+            console.log(json);
+
+            $("#address1").html('<input id="address" value="' + json.address + '" type="text" class="span20" />');
+            $("#total_num1").html('<input id="total_num" value="' + json.totalNum + '" type="text" class="span20" />');
+            $("#free_num1").html('<input id="free_num" value="' + json.freeNum + '" type="text" class="span20" />');
+            /*$("#province1").html('<input id="province" value="' + json.province + '" type="text" class="span20" />');
+            $("#city1").html('<input id="city" value="' + json.city + '" type="text" class="span20" />');
+            */
+            $("#price_per_hour1").html('<input id="price_per_hour" value="' + json.pricePerHour + '" type="text" class="span20" />');
+            $("#garage_code").html('<input id="garage_code" value="' + json.garageCode + '" type="text" class="span20" />');
+            // $("#garage_code1").html('<input id="garage_code1" value="' + json.garageCode + '" type="text" class="span20" />');
+
+        },
+        error: function(){
+            alert('false');
+        }
+    });
+
+    $("#submit1").on('click', function () {
+        var $garage_id = localStorage.getItem("garage_id");
+        var $address = $("#address").val();
+        var $total_num = $("#total_num").val();
+        var $free_num = $("#free_num").val();
+        var $latitude = $("#latitude").val();
+        var $longtitude = $("#longtitude").val();
+        var $price_per_hour = $("#price_per_hour").val();
+
+        var datas = {
+            garageId: $garage_id,
+            address: $address,
+            totalNum: $total_num,
+            freeNum: $free_num,
+            latitude: $latitude,
+            longtitude:$longtitude,
+            pricePerHour: $price_per_hour
+        };
+        console.log(datas);
+        $.ajax({
+            url: '/admin/change_garage_info',
+            type: 'post',
+            dataType: 'json',
+            data: datas,
+            success: function (json) {
+                console.log(json);
+                if (json.code == 1) {
+                    alert('车库信息修改失败');
+                } else {
+                    alert("车库信息修改成功");//注册成功
+                }
+            },
+            error: function () {
+                alert('false');
+            }
+        });
+        return false;
+    })
+
+</script>
+</body>
+
+</html>

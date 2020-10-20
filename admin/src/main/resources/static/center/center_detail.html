@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>故障交流中心</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="../css/admin-style.css" />
+    <link rel="stylesheet" href="../css/admin-media.css" class="skin-color" />
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="center_index.html" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>首页</a>
+            <a href="#" class="current">问题详情</a>
+        </div>
+        <h1>问题详情</h1>
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid" id="history_fault" style="font-size: large">
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-title">
+								<span class="icon">
+									<i class="icon-file"></i>
+								</span>
+                        <h5>问题详情</h5>
+                        <div class="buttons"><a href="center_index.html" class="btn btn-mini" id="return"><i class="icon-home"></i>返回</a></div>
+                    </div>
+                    <div class="widget-content nopadding">
+                        <ul class="recent-posts" id="question_detail">
+
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="widget-box">
+                    <div class="widget-title">
+								<span class="icon">
+									<i class="icon-tasks"></i>
+								</span>
+                        <h5>评论</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+                        <ul class="recent-posts" id="comment">
+                            
+                        </ul>
+                    </div>
+                </div>
+                <div class="widget-box">
+                    <div class="widget-title">
+								<span class="icon">
+									<i class="icon-pencil"></i>
+								</span>
+                        <h5>发表评论</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+                        <br>
+                        <div class="control-group">
+                            <div class="controls">
+                                <textarea id="contents" class="span20" placeholder="请填写您的评论"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button id="submit" type="submit" class="btn btn-success">发布评论</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div id="footer" class="span12"> 2018 &copy; LIFAN Admin.</div>
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/getNowDate.js"></script>
+<script type="text/javascript">
+    /*公共部分*/
+    $(".headerpage").load("center_header.html");
+
+    $question_id = localStorage.getItem("question_id");
+    console.log($question_id);
+    var datas = {
+        questionId : $question_id
+    };
+
+    //得到pv
+    var pv = 0;
+    $.ajax({
+        url: '/center/get_question_PV',
+        type: 'post',
+        //dataType: 'json',
+        data: datas,
+        success: function (json) {
+            console.log(json);
+            pv = json;
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            console.log(XMLHttpRequest.status);
+            console.log(XMLHttpRequest.readyState);
+            console.log(textStatus);
+            console.log(errorThrown);
+        }
+    });
+
+
+    var $username = localStorage.getItem("username");
+    var data = {
+        username: $username,
+        questionId: $question_id
+    };
+    //得到每个评论的赞数量
+    var like_count = new Array();
+    var like_status = new Array();
+    var total_count = 0;
+
+    //显示问题详情
+    var html = "";
+    //显示评论
+    var html2 = '';
+    $.ajax({
+        url: '/center/get_comment_detail',
+        type: 'post',
+        dataType: 'json',
+        data: data,
+        success: function (json) {
+            console.log(json);
+            for (var i = 0; i < json.data[0].length; i++) {
+                like_status[i] = json.data[0][i];
+                if(json.data[0][i] == "1"){
+                    total_count++;
+                }
+            }
+            console.log(like_status);
+
+            for (var i = 0; i < json.data[1].length; i++) {
+                like_count[i] = json.data[1][i];
+            }
+            console.log(like_count);
+
+            //显示问题详情
+            html = html +
+                '<li>' +
+                '<div class="user-thumb"> <img width="40" height="40" alt="User" src="../img/demo/av1.jpg"> </div>' +
+                '<div class="article-post">' +
+                '<div class="fr">' +
+                '<a href="#" class="btn btn-primary btn-mini">回复&nbsp;' + json.data[3].commentCount +
+                '</a> <a href="#" class="btn btn-success btn-mini">赞&nbsp;' + total_count +
+                '</a> <a href="#" class="btn btn-info btn-mini">浏览&nbsp;'+ pv +'</a></div>' +
+                '<p>' + json.data[3].username + ',&nbsp;' + transferTime(json.data[3].createdDate) + '</p>' +
+                '<p><a href="#">'+ json.data[3].title +'</a></p>' +
+                '<p><a href="#">'+ json.data[3].content +'</a></p>' +
+                '</div>' +
+                '</li>';
+            $("#question_detail").html(html);
+
+            //显示评论详情
+            for(var i = 0;i<json.data[2].length;i++){
+                var zan = '';
+                var cai = '';
+                if(like_status[i] > 0){
+                    zan = 'btn btn-success btn-mini';
+                    cai = 'btn btn-danger-active btn-mini';
+                }else if(like_status[i] < 0){
+                    zan = 'btn btn-success-active btn-mini';
+                    cai = 'btn btn-danger btn-mini';
+                }else{
+                    zan = 'btn btn-success-active btn-mini';
+                    cai = 'btn btn-danger-active btn-mini';
+                }
+
+                html2 = html2 +
+                    '<li>' +
+                    '<div class="fr">' +
+                    '<h3 id="ss'+ json.data[2][i].id +'"><button class="'+ zan +'" id="' + json.data[2][i].id + '">赞同&nbsp;'+ like_count[i] +
+                    '</button> <a class="'+ cai +'" id="'+ json.data[2][i].id +'">反对</a></h3>' +
+                    '</div>' +
+                    '<div class="article-post">' +
+                    '<p>'+ json.data[2][i].username+'</p>' +
+                    '<p>'+ json.data[2][i].content +'</p>' +
+                    '<p>发布于'+ transferTime(json.data[2][i].createdDate) + '&nbsp; 4条评论</p>' +
+                    '</div>' +
+                    '</li>';
+            }
+            $("#comment").html(html2);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            console.log(XMLHttpRequest.status);
+            console.log(XMLHttpRequest.readyState);
+            console.log(textStatus);
+            console.log(errorThrown);
+        }
+    });
+
+
+    //发表评论
+    $("#submit").on('click', function () {
+
+        var $contents = $("#contents").val();
+        if ($contents == '') {
+            alert("内容不能为空");
+            return false;
+        } else {
+            var datas = {
+                username: $username,
+                questionId: $question_id,
+                content:$contents
+            };
+            $.ajax({
+                url: '/center/add_comment',
+                type: 'post',
+                dataType: 'json',
+                data: datas,
+                success: function (json) {
+                    console.log(json);
+
+                    if(json["code"] == "0"){
+                        var inner = $('#comment');
+                        inner.append('<li>' +
+                            '<div class="fr">' +
+                            '<button class="btn btn-success-active btn-mini">赞同</button> <button class="btn btn-danger-active btn-mini">反对</button>' +
+                            '</div>' +
+                            '<div class="article-post">' +
+                            '<p>'+ $username+'</p>' +
+                            '<p>'+ $contents +'</p>' +
+                            '<p>发布于'+ getNowDate() + '&nbsp; 4条评论</p>' +
+                            '</div>' +
+                            '</li>');
+                    }else{
+                        alert("发表失败！");
+                    }
+                },
+                error: function () {
+                    alert('false');
+                }
+            })
+        }
+    });
+
+    //赞踩
+    $("#comment").on('click', function (e) {
+        var ee = e.target;//取出来的元素对象
+        console.log(ee.tagName);
+
+        if(ee.tagName != "BUTTON" && ee.tagName != "A"){
+            return;
+        }
+
+        if(ee.tagName = "BUTTON" && ee.tagName != "A")//判断是否是点击的按钮,是则为赞
+        {
+            var comment_id = ee.id; //是则传给车库id
+            var datas={
+                username: $username,
+                commentId: comment_id
+            };
+            $.ajax({
+                url: '/center/like',
+                type: 'post',
+                dataType: 'json',
+                data: datas,
+                success: function (json) {
+                    console.log(json);
+                    $(("#ss"+comment_id)).html('<button class="btn btn-success btn-mini" id="' + comment_id + '">赞同&nbsp;'+ json.msg +
+                    '</button> <a class="btn btn-danger-active btn-mini" id="'+ comment_id +'">反对</a>');
+                },
+                error: function () {
+                    alert('false');
+                }
+            })
+        }
+
+        if(ee.tagName = "A" && ee.tagName != "BUTTON")//判断是否是点击的链接,是则为踩
+        {
+            var comment_id = ee.id; //是则传给车库id
+            var data={
+                username: $username,
+                commentId: comment_id
+            };
+            $.ajax({
+                url: '/center/dislike',
+                type: 'post',
+                dataType: 'json',
+                data: data,
+                success: function (json) {
+                    console.log(json);
+                    $(("#ss"+comment_id)).html('<button class="btn btn-success-active btn-mini" id="' + comment_id + '">赞同&nbsp;'+ json.msg +
+                        '</button> <a class="btn btn-danger btn-mini" id="'+ comment_id +'">反对</a>');
+                },
+                error: function () {
+                    alert('false');
+                }
+            })
+
+        }
+
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>云端可视化监控管理系统</title><meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style type="text/css">
+  body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+  #imgDemo{transform:rotate(90deg)}
+</style>
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+<link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+<link rel="stylesheet" href="css/admin-style.css" />
+<link rel="stylesheet" href="css/admin-media.css" class="skin-color" />
+</head>
+<body id="translation">
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+<div id="content" style="min-height: 0px;padding-bottom: 0px">
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="index.html" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>车库总览</a></div>
+  </div>
+
+  <!--<div  class="quick-actions_homepage">
+    <ul class="quick-actions">
+          <li> <a href="garage_manage_index.html"> <i class="icon-dashboard"></i> 设备总数 </a> <a style="font-size: large" id="total_num"></a> </li>
+          <li> <a href="#"> <i class="icon-shopping-bag"></i> 在线设备数</a> <a style="font-size: large" id="used_num"></a> </li>
+          <li> <a href="#"> <i class="icon-web"></i> 离线设备数 </a> <a style="font-size: large" id="not_used_num"></a> </li>
+          <li> <a href="#"> <i class="icon-people"></i> 故障设备数 </a> <a style="font-size: large" id="fault_num"></a> </li>
+    </ul>
+  </div>-->
+
+</div>
+
+<div id="allmap"></div>
+
+<!--footer-->
+<div class="footerpage"></div>
+<!--footer over-->
+
+</body>
+</html>
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ByVwETBkWcRdkcG3VlSyLtSPE4GxpV3O"></script>
+<script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+
+<script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
+
+<script src="js/getCookie.js"></script>
+
+
+
+<script type="text/javascript">
+    /*公共部分*/
+    $(".headerpage").load("header.html");
+    $(".footerpage").load("footer.html");
+
+    //$(document).ready(function(){
+        var $total;
+        var $used;
+        var $not_used;
+        var $fault;
+
+        //添加车库总览
+        $.ajax({
+            url: '/admin/get_all_garage',
+            type: 'get',
+            //dataType: 'json',
+            //data: datas,
+            success: function (json) {
+                console.log(json);
+                $total = parseInt(json['totalNum']);
+                $used = parseInt(json['usedNum']);
+                $not_used = parseInt(json['notUsedNum']);
+                $fault = parseInt(json['faultNum']);
+
+                $("#total_num").html($total);
+                $("#used_num").html($used);
+                $("#not_used_num").html($not_used);
+                $("#fault_num").html($fault);
+            },
+            error: function () {
+                alert('false');
+            }
+        });
+
+        // 百度地图API功能
+        var $username = localStorage.getItem("username");
+        $("#username").html($username);
+
+        var map = new BMap.Map("allmap");//创建百度地图实例，这里的allmap是地图容器的id
+        //var point = new BMap.Point(118.788,32.0574);//创建一个点对象，这里的参数是地图上的经纬度
+        var point = new BMap.Point(120.82,31.0429);//创建一个点对象
+        map.centerAndZoom(point, 9);//这里是将地图的中心移动到我们刚才创建的点；这里的12是地图的缩放界别；数值越大，地图看的越细
+        map.enableScrollWheelZoom();
+        map.addControl(new BMap.NavigationControl());
+        map.addControl(new BMap.ScaleControl());
+
+        var stCtrl = new BMap.PanoramaControl(); //构造全景控件
+        stCtrl.setOffset(new BMap.Size(20, 20));
+        map.addControl(stCtrl);//添加全景控件
+
+
+        var markers = [];
+
+        //得到所有车库位置
+        $.ajax({
+            url: 'admin/get_all_garage_info',
+            type: 'post',
+            data:datas,
+            dataType: 'json',
+            success: function (garage_info) {
+                console.log(garage_info);
+                var n = garage_info.length;
+                if(n == 0){
+                    alert("无车库信息")
+                }
+                for(var i=0;i<garage_info.length;i++){
+                    var garage_point = new BMap.Point(garage_info[i]['longtitude'],garage_info[i]['latitude']);
+                    var myIcon = new BMap.Icon("images/garage1.png", new BMap.Size(50, 50), {
+                        // 指定定位位置。
+                        // 当标注显示在地图上时，其所指向的地理位置距离图标左上
+                        // 角各偏移10像素和25像素。您可以看到在本例中该位置即是
+                        // 图标中央下端的尖角位置。
+                        anchor: new BMap.Size(20, 25),
+                        // 设置图片偏移。
+                        // 当您需要从一幅较大的图片中截取某部分作为标注图标时，您
+                        // 需要指定大图的偏移位置，此做法与css sprites技术类似。
+                        imageOffset: new BMap.Size(0, 0)   // 设置图片偏移
+                    });
+                    var marker = new BMap.Marker(garage_point,{icon:myIcon});  // 创建标注
+
+                    //map.addOverlay(marker);
+
+                    // if(garage_info[i]['id'] == 1){
+                    //     marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+                    // }
+
+                    marker.addEventListener("click",function() {
+                        window.location.href="garage_manage_index.html";
+                    });
+
+                    //添加鼠标移到marker位置的信息窗口
+                    (function(i) {
+                        var sContent =
+                            "<h4 style='margin:0 0 5px 0;padding:0.2em 0;font-size: 16px;'>"+ garage_info[i]['address'] +"</h4>" +
+                            "<img style='float:right;margin: 10px 0px 6px 0px;' id='imgDemo' src='../images/juli-garage.jpg' width='100' height='150' title='聚力机械'/>" +
+                            "<p style='font-size: 12px'>" + "车位总数："+garage_info[i]['totalNum'] + "个</p>" +
+                            "<p style='font-size: 12px'>" + "空闲数量：" + garage_info[i]['freeNum'] +"个</p>" +
+                            "<p style='font-size: 12px'>" + "停车费用：" + garage_info[i]['pricePerHour'] +"元/小时</p>" +
+                            "</div>";
+
+                        var infoWindow = new BMap.InfoWindow(sContent);  // 创建信息窗口对象
+
+                        marker.addEventListener("mouseover", function(){
+
+                            this.openInfoWindow(infoWindow);
+                            // //图片加载完毕重绘infowindow
+                            // document.getElementById('imgDemo').onload = function (){
+                            //     infoWindow.redraw();   //防止在网速较慢，图片未加载时，生成的信息框高度比图片的总高度小，导致图片部分被隐藏
+                            // }
+                        });
+                    })(i);
+
+                    markers.push(marker);
+
+                }
+                //最简单的用法，生成一个marker数组，然后调用markerClusterer类即可。
+                var markerClusterer = new BMapLib.MarkerClusterer(map, { markers:markers });
+            },
+            error: function (e) {
+                console.log('false',e);
+            }
+        });
+
+
+    //});
+
+    /*// 百度地图API功能
+    var map = new BMap.Map("allmap");
+    map.centerAndZoom(new BMap.Point(116.404, 39.915), 5);
+    map.enableScrollWheelZoom();
+
+
+    var MAX = 10;
+    var markers = [];
+    var pt = null;
+    var i = 0;
+    for (; i < MAX; i++) {
+        pt = new BMap.Point(Math.random() * 40 + 85, Math.random() * 30 + 21);
+
+        var myIcon = new BMap.Icon("images/garage1.png", new BMap.Size(50, 50), {
+            // 指定定位位置。
+            // 当标注显示在地图上时，其所指向的地理位置距离图标左上
+            // 角各偏移10像素和25像素。您可以看到在本例中该位置即是
+            // 图标中央下端的尖角位置。
+            anchor: new BMap.Size(20, 25),
+            // 设置图片偏移。
+            // 当您需要从一幅较大的图片中截取某部分作为标注图标时，您
+            // 需要指定大图的偏移位置，此做法与css sprites技术类似。
+            imageOffset: new BMap.Size(0, 0)   // 设置图片偏移
+        });
+        var marker = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
+        markers.push(marker);
+    }
+    //最简单的用法，生成一个marker数组，然后调用markerClusterer类即可。
+    var markerClusterer = new BMapLib.MarkerClusterer(map, {markers:markers});*/
+
+</script>
+

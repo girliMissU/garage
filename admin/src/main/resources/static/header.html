@@ -1,0 +1,208 @@
+<!--Header-part-->
+<div id="header">
+    <!--<h3>云端可视化监控管理系统</h3>-->
+
+    <h1><a href="index.html">Maruti Admin</a></h1>
+<!--    <h1>Cloud visual monitoring and management system</h1>-->
+</div>
+<!--close-Header-part-->
+
+<!--top-Header-messaages-->
+<div class="btn-group rightzero"> <a class="top_message tip-left" title="Manage Files"><i class="icon-file"></i></a> <a class="top_message tip-bottom" title="Manage Users"><i class="icon-manager"></i></a> <a class="top_message tip-bottom" title="Manage Comments"><i class="icon-reply"></i><span class="label label-important">0</span></a></div>
+<!--close-top-Header-messaages-->
+
+<!--top-Header-menu-->
+<div id="user-nav" class="navbar navbar-inverse">
+    <ul class="nav">
+        <li class=""><a title="" href="#"><i class="icon icon-user"></i> <span class="text" id ="username"></span></a></li>
+        <li class=""><a title="" href="maintain_fault_list.html" id="comment_count"></a></li>
+        <li class=""><a title="" href="#"><i class="icon icon-cog"></i> <span class="text" onclick="change()">中/英</span></a></li>
+        <li class=""><a title="" href="#"><i class="icon icon-share-alt"></i> <span class="text" onclick="logout()">注销</span></a></li>
+        <!--<li class=""><a title="" href="#"><i class="icon icon-cog"></i> <span class="text" onclick="change()">Chinese/English</span></a></li>
+        <li class=""><a title="" href="#"><i class="icon icon-share-alt"></i> <span class="text" onclick="logout()">Logout</span></a></li>-->
+
+    </ul>
+</div>
+
+<div id="search">
+    <input type="text" placeholder="Search..."/>
+    <button type="submit" class="tip-left" title="Search"><i class="icon-search icon-white"></i></button>
+</div>
+<!--close-top-Header-menu-->
+
+<div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> 车库总览</a>
+    <ul>
+        <li class="active"><a href="index.html"><i class="icon icon-home"></i>
+            <span>车库总览</span></a>
+            <!--<span>Garage Overview</span></a>-->
+        </li>
+
+        <li class="active">
+            <a href="garage_manage_index.html">
+                <i class="icon icon-road"></i>
+                <span>车库管理</span>
+            </a>
+        </li>
+
+        <li class="active"> <a href="#"><i class="icon icon-facetime-video"></i>
+            <span>实时监控</span></a>
+            <!--<span>Real-time monitoring</span>-->
+            <span class="label">3</span></a>
+            <ul>
+                <li><a href="realtime_camera.html">实时视频监控</a></li>
+                <li><a href="realtime_detection.html">实时行人检测</a></li>
+                <li><a href="realtime_history_detection.html">检测历史记录</a></li>
+            </ul>
+        </li>
+
+        <li class="submenu"> <a href="#"><i class="icon icon-inbox"></i>
+            <span>故障管理</span>
+            <!--<span>Fault Management</span>-->
+            <span class="label">3</span></a>
+            <ul>
+                <li><a href="fault_history.html">历史故障</a></li>
+                <li><a href="fault_contact.html">报警联系人</a></li>
+                <li><a href="fault_trigger.html">触发器管理</a></li>
+            </ul>
+        </li>
+
+        <li class="active">
+            <a href="system_manager_view.html">
+                <i class="icon icon-user"></i>
+                <span>系统管理</span>
+            </a>
+        </li>
+
+        <li class="submenu"> <a href="#"><i class="icon icon-signal"></i>
+            <span>统计报表</span>
+            <!--<span>Statistic reports</span>-->
+            <span class="label">2</span></a>
+            <ul>
+                <li><a href="form_history_solution.html">历史解决方案</a></li>
+                <li><a href="form_life_manage.html">生命周期管理</a></li>
+            </ul>
+        </li>
+   <!--     <li class="submenu">
+            <a href="maintain_fault_list.html">
+                <i class="icon icon-pencil"></i>
+                <span>维保服务</span>
+            </a>
+        </li>-->
+        <li class="submenu"> <a href="#"><i class="icon icon-pencil"></i>
+            <span>维保服务</span>
+            <!--<span>Statistic reports</span>-->
+            <span class="label">2</span></a>
+            <ul>
+                <li><a href="maintain_fault_list.html">维修工单</a></li>
+                <li><a href="my_maintain.html">保养工单</a></li>
+            </ul>
+        </li>
+       <!-- <li class="active"><a href="center_index.html"><i class="icon icon-pencil"></i> <span>交流中心</span></a></li>-->
+    </ul>
+</div>
+
+<script src="js/language.js"></script>
+<script type="text/javascript">
+
+    /*中英文切换*/
+    function change(){
+        console.log("正在中英文切换");
+        translate();
+    }
+
+    // 获取cookie值(key)
+    function getCookie(cname)
+    {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++)
+        {
+            var c = ca[i].trim();
+            if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+        }
+        return "";
+    }
+
+    //判断是否登录
+    $(function(){
+        var $ticket= getCookie("ticket")
+        console.log($ticket);
+        if($ticket != ""){
+            var datas = {
+                ticket: $ticket
+            };
+            //判断ticket是否有效
+            $.ajax({
+                url: '/admin/ifTicket',
+                type: 'post',
+//          dataType: 'json',
+                data: datas,
+                success: function (json) {
+                    console.log(json);
+                    if (json == "0") {
+                        window.location.href = 'login.html';//未登录跳转到登录界面
+                    }
+                },
+                error: function () {
+                    alert('false');
+                }
+            })
+        }else{
+            window.location.href = 'login.html';//未登录跳转到登录界面
+        }
+    });
+
+    //注销
+    function logout()
+    {
+        $.ajax({
+            url: '/admin/logout',
+            type: 'post',
+//                            dataType: 'json',
+            //data: datas,
+            success: function (json) {
+                console.log(json);
+                if (json == "1") {
+                    window.location.href = 'login.html';//登录成功跳转
+                }
+            },
+            error: function () {
+                alert('false');
+            }
+        })
+    }
+
+
+
+    //添加用户名到页面
+    var $username = localStorage.getItem("username");
+    $("#username").html($username);
+
+    var datas = {
+        toName: $username,
+    };
+    $.ajax({
+        url: '/admin/get_unread_count_all',
+        type: 'post',
+//                            dataType: 'json',
+        data: datas,
+        success: function (json) {
+            console.log(json);
+            var html = '';
+            if(json != 0){
+                html = '<i class="icon icon-envelope"></i> <span class="text">消息</span><span class="label label-important">'+ json + '</span>'
+                //html = '<i class="icon icon-envelope"></i> <span class="text">News</span><span class="label label-important">'+ json + '</span>'
+
+            }else{
+                html = '<i class="icon icon-envelope"></i> <span class="text">消息</span>';
+                //html = '<i class="icon icon-envelope"></i> <span class="text">News</span>';
+            }
+
+            $("#comment_count").html(html);
+        },
+        error: function () {
+            alert('false');
+        }
+    })
+
+</script>

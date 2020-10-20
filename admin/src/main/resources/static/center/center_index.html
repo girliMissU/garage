@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>故障交流中心</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="../css/admin-style.css" />
+    <link rel="stylesheet" href="../css/admin-media.css" class="skin-color" />
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="center_index.html" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>首页</a>
+        </div>
+        <h1>首页</h1>
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid" id="history_fault" style="font-size: large">
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-title">
+								<span class="icon">
+									<i class="icon-file"></i>
+								</span>
+                        <h5>最近动态</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+                        <ul class="recent-posts" id="question_list">
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div id="footer" class="span12"> 2018 &copy; LIFAN Admin.</div>
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/getNowDate.js"></script>
+<script type="text/javascript">
+    /*公共部分*/
+    $(".headerpage").load("center_header.html");
+
+    $username = localStorage.getItem("username");
+    $viewname = localStorage.getItem("viewname");
+    var datas = {
+        all: 1,
+        username: $username,
+        viewName: $viewname
+    };
+    //显示问题列表
+    var html = "";
+    $.ajax({
+        url: '/center/get_question_list',
+        type: 'post',
+        //dataType: 'json',
+        data: datas,
+        success: function (json) {
+            console.log(json);
+            for(var i = 0;i < json[0].length;i++){
+                html = html +
+                    '<li>' +
+                    '<div class="user-thumb"> <img width="40" height="40" alt="User" src="../img/demo/av3.jpg"> </div>' +
+                    '<div class="article-post">' +
+                    '<div class="fr"><span class="btn btn-primary btn-mini">回复&nbsp;'+ json[0][i].commentCount +'</span> <span href="#" class="btn btn-success btn-mini">关注</span> <span href="#" class="btn btn-info btn-mini">浏览&nbsp;'+ json[1][i] +'</span></div>' +
+                    '<p><a href="#" id="'+ json[0][i].id +'">'+ json[0][i].title +'</a></p>' +
+                    '<p><a href="#" class="user-info" id="' + json[0][i].username + '">' + json[0][i].username + ',&nbsp;' + transferTime(json[0][i].createdDate) + '</a></p>' +
+                    '<p></p>' +
+                    '<p>'+ json[0][i].content +'</p>' +
+                    '</div>' +
+                    '</li>';
+            }
+            html = html + '<li><button class="btn btn-warning btn-mini">查看更多</button></li>';
+            $("#question_list").html(html);
+        },
+        error: function () {
+            alert('false');
+        }
+    });
+
+
+    $("#question_list").on('click', function (e) {
+        var ee = e.target;//取出来的元素对象
+        console.log(ee.tagName);
+
+        if(ee.tagName != "A" && ee.className != "user-info")//判断是否是点击的按钮
+        {
+            return; //不是则返回
+        }
+
+        //问题详情页跳转
+        if(ee.tagName == "A")
+        {
+            var question_id = ee.id; //是则传给车库id
+            localStorage.setItem("question_id",question_id);
+            window.location.href = "center_detail.html";
+        }
+
+        //用户主页跳转
+        if(ee.tagName == "A" && ee.className == "user-info")
+        {
+            var view_name = ee.innerHTML.split(',&nbsp;');
+            console.log(view_name[0]);
+            localStorage.setItem("viewname",view_name[0]);
+            window.location.href = "center_my_index.html";
+        }
+    });
+
+
+
+</script>
+</body>
+</html>

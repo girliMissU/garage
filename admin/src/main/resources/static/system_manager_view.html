@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>云端可视化监控管理系统</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="css/admin-style.css" />
+    <link rel="stylesheet" href="css/admin-media.css" class="skin-color" />
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>系统管理</a>
+            <a href="#" class="current">管理员列表</a>
+        </div>
+        <!--<h1>管理员列表</h1>-->
+    </div>
+
+    <div class="container-fluid">
+        <div class="row-fluid" id="view" style="font-size:medium">
+            <div class="widget-box">
+                <div class="widget-title"> <span class="icon"> <i class="icon-th"></i> </span>
+                    <h5>管理员信息</h5>
+                    <div class="buttons"><a href="system_manager_add.html" class="btn btn-mini"><i class="icon-plus"></i>添加管理员</a></div>
+                </div>
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>管理员用户名</th>
+                            <th>管理员权限</th>
+                        </tr>
+                        </thead>
+                        <tbody id="manager_view">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid" id="no_authority">
+            <h1>
+                您没有该权限！
+            </h1>
+        </div>
+    </div>
+</div>
+
+<!--footer-->
+<div class="footerpage"></div>
+<!--footer over-->
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/getCookie.js"></script>
+
+<script type="text/javascript">
+    /*公共部分*/
+    $(".headerpage").load("header.html");
+    $(".footerpage").load("footer.html");
+
+    if(authority == 0){
+        document.getElementById("view").style.display="block";
+        document.getElementById("no_authority").style.display="none";
+    }else{
+        document.getElementById("view").style.display="none";
+        document.getElementById("no_authority").style.display="block";
+    }
+    $.ajax({
+        url: '/admin/manager_view',
+        type: 'get',
+//  dataType: 'json',
+//  data: datas,
+        success: function (json) {
+            console.log(json);
+            var $html = "";
+            for(var i=0;i<json.length;i++) {
+
+                var auth;
+                if(json[i].authority < 0){
+                    auth = "普通用户";
+                } else if(json[i].authority > 0){
+                    auth = "车库" + json[i].authority + "管理员";
+                } else {
+                    auth = "总管理员";
+                }
+                $html = $html +
+                    "<tr>" +
+                    "<td>" + json[i].id + "</td>" +
+                    "<td>" + json[i].username + "</td>" +
+                    "<td>" + auth + "</td>" +
+                    "</tr>";
+            }
+            $("#manager_view").html($html)
+        },
+        error: function () {
+            alert('false');
+        }
+    })
+</script>
+
+</body>
+
+</html>

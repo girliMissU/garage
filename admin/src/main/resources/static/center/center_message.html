@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>故障交流中心</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="../css/admin-style.css" />
+    <link rel="stylesheet" href="../css/admin-media.css" class="skin-color" />
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="center_index.html" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>首页</a>
+        </div>
+        <h1>消息</h1>
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid" id="history_fault" style="font-size: large">
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-title">
+								<span class="icon">
+									<i class="icon-file"></i>
+								</span>
+                        <h5>消息列表</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+                        <ul class="recent-posts" id="message_list">
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div id="footer" class="span12"> 2018 &copy; LIFAN Admin.</div>
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/getNowDate.js"></script>
+<script type="text/javascript">
+    /*公共部分*/
+    $(".headerpage").load("center_header.html");
+
+    $username = localStorage.getItem("username");
+    var datas = {
+        username: $username
+    };
+    var html = '';
+    //显示问题列表
+    $.ajax({
+        url: '/center/message_list',
+        type: 'post',
+        //dataType: 'json',
+        data: datas,
+        success: function (json) {
+            console.log(json);
+            for(var i = 0;i < json.data[0].length;i++){
+                var unread = '';
+                if(json.data[2][i] != 0){
+                    unread = '<span class="label label-important">' + json.data[2][i] + '</span>';
+                }else{
+                    unread = '';
+                }
+                html = html +
+                    '<li>' +
+                    '<div class="user-thumb"> <img width="40" height="40" alt="User" src="../img/demo/av2.jpg">' + '</div>' +
+                    '<div class="article-post">' +
+                    '<div class="fr"><span class="btn btn-primary btn-mini">'+ transferTime(json.data[0][i].createdDate) +'</span></div>' +
+                    '<span class="user-info" style="font-size: large">' + json.data[1][i].username + ' </span>' +
+                    '<p><a href="#" id="' + json.data[0][i].conversationId + '">'+ unread + json.data[0][i].content +'</a></p>' +
+                    '</div>' +
+                    '</li>';
+            }
+            $("#message_list").html(html);
+
+        },
+        error: function () {
+            alert('false');
+        }
+    });
+
+    //问题详情页跳转
+    $("#message_list").on('click', function (e) {
+        var ee = e.target;//取出来的元素对象
+        console.log(ee.tagName);
+        if(ee.tagName != "A")//判断是否是点击的按钮
+        {
+            return; //不是则返回
+        }
+        var conversation_id = ee.id; //是则传给车库id
+        localStorage.setItem("conversation_id",conversation_id);
+        window.location.href = "center_message_detail.html";
+    });
+
+
+</script>
+</body>
+</html>

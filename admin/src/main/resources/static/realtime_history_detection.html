@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>云端可视化监控管理系统</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="css/admin-style.css" />
+    <link rel="stylesheet" href="css/switch.css" />
+    <link rel="stylesheet" href="css/admin-media.css" class="skin-color" />
+
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>实时监控</a>
+            <a href="#" class="current">检测历史记录</a>
+        </div>
+        <!--<h1>车库实时监控</h1>-->
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="widget-box" id="all_garage" style="display:block">
+                    <div class="widget-title"><span class="icon"><i class="icon-signal"></i></span>
+                        <h5>检测历史记录</h5>
+                        <div class="buttons">
+                            <a href="realtime_detection.html" class="btn btn-mini"><i class="icon-user"></i>实时行人检测</a>
+                        </div>
+                    </div>
+                    <div class="widget-content" id="show_garage">
+                        <table class="table table-bordered table-striped with-check" id="fault_history_table">
+                            <thead>
+                            <tr>
+                                <th><input type="checkbox" id="title-table-checkbox" name="title-table-checkbox" /></th>
+                                <th>检测编号</th>
+                                <th>车库编号</th>
+                                <th>是否有人</th>
+                                <th>检测时间</th>
+                                <th>查看</th>
+                            </tr>
+                            </thead>
+                            <tbody id="history_detection_list">
+
+                            </tbody>
+                        </table>
+
+                        <div style="margin-right: 87%;">
+                            <a href="#myAlert" data-toggle="modal"><button id="deleteSelected" class="btn btn-danger">批量删除</button></a>
+                            <a href="#printAlert" data-toggle="modal"><button id="print" class="btn btn-primary">批量导出</button></a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="myAlert" class="modal hide">
+                    <div class="modal-header">
+                        <button data-dismiss="modal" class="close" type="button">×</button>
+                        <h3>行人检测结果</h3>
+                    </div>
+                    <div class="modal-body">
+                        <image id="currentImage"></image>
+                    </div>
+                    <div class="modal-footer"> <a data-dismiss="modal" class="btn" href="#">返回</a> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--footer-->
+<div class="footerpage"></div>
+<!--footer over-->
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/getCookie.js"></script>
+<!--<script src="js/ezuikit.js"></script>-->
+<script src="js/html2canvas.min.js"></script>
+<script src="js/getNowDate.js"></script>
+<script type="text/javascript">
+    /*公共部分*/
+    $(".headerpage").load("header.html");
+    $(".footerpage").load("footer.html");
+
+
+    var html = '';
+
+    $.ajax({
+        url: 'admin/getHistoryDetection',
+        type: 'post',
+        //dataType: 'json',
+        //data: datas,
+        success: function (json){
+            console.log(json);
+            var ifPersonState = '';
+            for(var i = 0;i < json.length;i++){
+                if(json[i].ifPerson == "1"){
+                    ifPersonState = '<span class="label label-important">有人</span>';
+                }else{
+                    ifPersonState = '<span class="label label-success">无人</span>';
+                }
+
+                html = html +
+                    "<tr>" +
+                    "<td><input type='checkbox' name='historyDetectionList' value='"+ json[i].id +"'/></td>" +
+                    "<td>SZPD00"+ json[i].id +"</td>" +
+                    "<td>"+ json[i].garageId +"</td>" +
+                    "<td>"+ ifPersonState +"</td>" +
+                    "<td>"+ transferTime(json[i].sendTime) +"</td>" +
+                    "<td><a href=\"#myAlert\" data-toggle=\"modal\" class=\"btn btn-primary btn-mini\" id='" + json[i].id + "'>查看</a>" +
+                    "</tr>";
+            }
+            $("#history_detection_list").html(html);
+        },
+        error: function(){
+            alert('false');
+        }
+    });
+
+    //订单详情页跳转
+    $("#history_detection_list").on('click', function (e) {
+        var ee = e.target;//取出来的元素对象
+        console.log(ee.tagName);
+        if(ee.tagName != "A")//判断是否是点击的按钮
+        {
+            return; //不是则返回
+        }
+        var detection_id = ee.id; //是则传给检测图片id
+        document.getElementById("currentImage").src = "/upload/"+ detection_id +".jpg"+"?t=" + Math.random();
+
+    });
+
+
+
+</script>
+</body>
+
+</html>

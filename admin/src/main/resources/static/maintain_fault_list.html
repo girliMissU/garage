@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>云端可视化监控管理系统</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="css/admin-style.css" />
+    <link rel="stylesheet" href="css/admin-media.css" class="skin-color" />
+
+    <!--勾选框-->
+    <link rel="stylesheet" href="css/uniform.css" />
+
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>维保服务</a>
+            <a href="#" class="current">工单系统</a>
+        </div>
+        <!--<h1>我的工单</h1>-->
+    </div>
+
+    <div class="container-fluid">
+        <div class="row-fluid" id="question_view" style="font-size: medium">
+            <div class="widget-box">
+                <div class="widget-title"> <span class="icon"> <i class="icon-th"></i> </span>
+                    <h5>我的工单</h5>
+                    <div class="buttons"><a href="maintain_fault_submit.html" class="btn btn-mini"><i class="icon-plus"></i>提交工单</a></div>
+                    <!--<span class="label label-success">excited</span>-->
+                </div>
+                <div class="widget-content">
+                    <table class="table table-bordered table-striped with-check" id="fault_history_table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="title-table-checkbox" name="title-table-checkbox" /></th>
+                                <th>工单编号</th>
+                                <th>问题内容</th>
+                                <th>车库编号</th>
+                                <th>故障类型</th>
+                                <th>提交人</th>
+                                <th>提交时间</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fault_view">
+
+                        </tbody>
+                    </table>
+
+                    <div style="margin-right: 87%;">
+                        <a href="#myAlert" data-toggle="modal"><button id="deleteSelected" class="btn btn-danger">批量删除</button></a>
+                        <a href="#printAlert" data-toggle="modal"><button id="print" class="btn btn-primary">批量导出</button></a>
+                    </div>
+
+                </div>
+                <div id="myAlert" class="modal hide">
+                    <div class="modal-header">
+                        <button data-dismiss="modal" class="close" type="button">×</button>
+                        <h3>工单管理</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>是否确认删除该工单?</p>
+                    </div>
+                    <div class="modal-footer"> <a data-dismiss="modal" class="btn btn-danger" href="#" id="confirmDelete">删除</a> <a data-dismiss="modal" class="btn" href="#">取消</a> </div>
+                </div>
+
+                <div id="printAlert" class="modal hide">
+                    <div class="modal-header">
+                        <button data-dismiss="modal" class="close" type="button">×</button>
+                        <h3>工单管理导出pdf</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>是否确认导出工单记录?</p>
+                    </div>
+                    <div class="modal-footer"> <a data-dismiss="modal" class="btn btn-primary" href="#" id="confirmPrint">导出</a> <a data-dismiss="modal" class="btn" href="#">取消</a> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--footer-->
+<div class="footerpage"></div>
+<!--footer over-->
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/getNowDate.js"></script>
+
+<!--勾选框-->
+<script src="js/maruti.tables.js"></script>
+<script src="js/jquery.uniform.js"></script>
+<script src="js/select2.min.js"></script>
+<script src="js/jquery.dataTables.min.js"></script>
+<script src="js/maruti.js"></script>
+
+<!--导出excel-->
+<script src="js/excel/xlsx.full.min.js"></script>
+<!--<script lang="javascript" src="js/xlsx.core.min.js"></script>-->
+<!--<script type="text/javascript" src="js/Blob.js"></script>-->
+<script src="js/excel/FileSaver.js"></script>
+<script src="js/excel/Export2Excel.js"></script>
+
+<script type="text/javascript">
+    /*公共部分*/
+    $(".headerpage").load("header.html");
+    $(".footerpage").load("footer.html");
+
+    var html = "";
+    var $username = localStorage.getItem("username");
+    var datas = {
+        username: $username
+    };
+
+    //显示工单列表
+    $.ajax({
+        url: '/admin/get_problems',
+        type: 'post',
+        //dataType: 'json',
+        data: datas,
+        success: function (json) {
+            console.log(json);
+            for(var i = 0;i < json.length;i++){
+                html = html +
+                    "<tr>" +
+                    "<td><input type='checkbox' name='faultList' value='"+ json[i].id +"'/></td>" +
+                    "<td>"+ json[i].id +"</td>" +
+                    "<td>"+ json[i].content +"</td>" +
+                    "<td>"+ json[i].garageId +"</td>" +
+                    "<td>"+ json[i].title +"</td>" +
+                    "<td>"+ json[i].username +"</td>" +
+                    "<td>"+ transferTime(json[i].createdDate) +"</td>" +
+                    "<td>"+ json[i].status +"</td>" +
+                    "<td><button class=\"btn btn-primary btn-mini\" style='margin-right: 5px;' id='" + json[i].id + "'>查看</button>" +
+                    "<a href=\"#myAlert\" data-toggle=\"modal\" class=\"btn btn-danger btn-mini\" id='delete_" + json[i].id + "'>删除</a>" +
+                    "</tr>";
+            }
+            $("#fault_view").html(html);
+        },
+        error: function () {
+            alert('false');
+        }
+    });
+
+    //订单详情页跳转
+    $("#fault_view").on('click', function (e) {
+        var ee = e.target;//取出来的元素对象
+        console.log(ee.tagName);
+        if(ee.tagName != "BUTTON")//判断是否是点击的按钮
+        {
+            return; //不是则返回
+        }
+        var question_id = ee.id; //是则传给车库id
+        localStorage.setItem("question_id",question_id);
+        window.location.href = "maintain_fault_detail.html";
+    });
+
+    //删除选中项
+    //$("#deleteSelected").on('click', function () {
+    document.getElementById("confirmDelete").onclick= function(){
+
+        selectDelete();
+    };
+
+    function selectDelete() {
+        var itemIds = "";
+        var items = document.getElementsByName("faultList");
+
+        var flag = false;
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].checked) {
+                itemIds += items[i].value + ";";
+                flag = true; //表示复选框有被选中的
+            }
+        }
+        alert(flag);
+        if (flag) {
+            alert(itemIds);
+        }
+    }
+
+    //$("#fault_history_table").modal("show");
+
+    //导出选中项
+    document.getElementById("confirmPrint").onclick= function(){
+        /*html2canvas($("#fault_history_table"), {
+            onrendered:function(canvas) {
+                var pageData = canvas.toDataURL('image/jpeg', 1.0);
+                var pdf = new jsPDF('', 'pt', 'a4');
+                pdf.addImage(pageData, 'JPEG', 0, 0, 595.28, 592.28/canvas.width * canvas.height );
+                pdf.save('历史故障信息_' + getCurrentDate() + '.pdf');
+            }
+        })*/
+
+        export_table_to_excel('fault_history_table','我的工单_' + getCurrentDate());
+    };
+
+
+</script>
+
+</body>
+
+</html>

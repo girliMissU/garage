@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>云端可视化监控管理系统</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="css/admin-style.css" />
+    <link rel="stylesheet" href="css/switch.css" />
+    <link rel="stylesheet" href="css/admin-media.css" class="skin-color" />
+
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>实时监控</a>
+            <a href="#" class="current">车库实时监控</a>
+        </div>
+        <!--<h1>车库实时监控</h1>-->
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="widget-box" id="all_garage" style="display:block">
+                    <div class="widget-title"><span class="icon"><i class="icon-signal"></i></span>
+                        <h5>车库实时监控</h5>
+                        <div class="buttons">
+                            <a href="realtime_detection.html" class="btn btn-mini"><i class="icon-user"></i>实时行人检测</a>
+                            <a href="#myAlert" data-toggle="modal" class="btn btn-mini" id="capture"><i class="icon-picture"></i>截图</a>
+                        </div>
+
+                        </div>
+                    <div class="widget-content" id="show_garage">
+                        <table style="width: 100%;">
+                            <!--<tr>-->
+                                <!--<ul class="stat-boxes stat-boxes2" style="top: 3px">-->
+                                    <!--<li>-->
+                                        <!--<div class="left peity_bar_neutral" style="font-size: 18px;">车库行人状态</div>-->
+                                        <!--<div class="right" style="padding: 9px 0px 7px 0;">-->
+                                            <!--<strong id="personState" style="margin-top: -2px;font-size: 18px">-->
+                                                <!--<span class='label label-success' style='font-size: 16px'>无人</span>-->
+                                            <!--</strong>-->
+                                        <!--</div>-->
+                                    <!--</li>-->
+                                <!--</ul>-->
+                            <!--</tr>-->
+                            <tr>
+                                <td style="width: 50%;">
+                                    <h4 id="garage_name">苏州市聚力机械1号立体车库</h4>
+                                    <video id="myPlayer" autoplay="autoplay" poster="" controls playsInline webkit-playsinline [autoplay]>
+                                        <source src="http://hls.open.ys7.com/openlive/0dc6b4e764c24877a5c3645053f9ce97.m3u8" type="application/x-mpegURL" />
+                                        <!--<source src="http://hls.open.ys7.com/openlive/0dc6b4e764c24877a5c3645053f9ce97.hd.m3u8" type=""/>-->
+                                        <!--<source src="rtmp://rtmp.open.ys7.com/openlive/0dc6b4e764c24877a5c3645053f9ce97.hd" type=""/>-->
+                                        <!--<source src="wss://wsopen.ys7.com/0dc6b4e764c24877a5c3645053f9ce97"/>-->
+                                    </video>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+                    <canvas style="align-content: center"></canvas>
+                </div>
+
+                <div id="myAlert" class="modal hide">
+                    <div class="modal-header">
+                        <button data-dismiss="modal" class="close" type="button">×</button>
+                        <h3>当前车库图片</h3>
+                    </div>
+                    <div class="modal-body">
+                        <image id="currentImage"></image>
+                    </div>
+                    <div class="modal-footer"> <a data-dismiss="modal" class="btn" href="#">返回</a> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--footer-->
+<div class="footerpage"></div>
+<!--footer over-->
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/getCookie.js"></script>
+<script src="https://open.ys7.com/sdk/js/2.0/ezuikit.js"></script>
+<!--<script src="js/ezuikit.js"></script>-->
+<script src="js/html2canvas.min.js"></script>
+<script src="js/getNowDate.js"></script>
+<script type="text/javascript">
+    /*公共部分*/
+    $(".headerpage").load("header.html");
+    $(".footerpage").load("footer.html");
+
+    //获取当前日期
+    function getCurrentDate() {
+        var date = new Date();
+        var sign1 = "-";
+        var year = date.getFullYear(); // 年
+        var month = date.getMonth() + 1; // 月
+        var day  = date.getDate(); // 日
+
+        // 给一位数数据前面加 “0”
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (day >= 0 && day <= 9) {
+            day = "0" + day;
+        }
+        var currentdate = year + sign1 + month + sign1 + day;
+        return currentdate;
+    }
+    //获取当前时间
+    function getCurrentTime() {
+        var date = new Date();
+        var sign2 = "_";
+        var hour = date.getHours(); // 时
+        var minutes = date.getMinutes(); // 分
+        var seconds = date.getSeconds(); //
+        // 给一位数数据前面加 “0”
+
+        if (hour >= 0 && hour <= 9) {
+            hour = "0" + hour;
+        }
+        if (minutes >= 0 && minutes <= 9) {
+            minutes = "0" + minutes;
+        }
+        if (seconds >= 0 && seconds <= 9) {
+            seconds = "0" + seconds;
+        }
+        var currentTime = hour + sign2 + minutes + sign2 + seconds;
+        return currentTime;
+    }
+
+    var $garage_id = localStorage.getItem("garage_id");
+
+    var data1 = {
+        id: $garage_id
+    };
+
+    //显示车库的基本信息
+    $.ajax({
+        url: 'admin/get_garage_info_by_id',
+        type: 'post',
+//                    dataType: 'json',
+        data: data1,
+        success: function (json){
+            $("#garage_name").html(json['address']);
+        },
+        error: function(){
+            alert('false');
+        }
+    });
+
+    var player = new EZuikit.EZUIPlayer('myPlayer');
+    player.on('error', function(){
+        console.log('error');
+    });
+    player.on('play', function(){
+        console.log('play');
+    });
+    player.on('pause', function(){
+        console.log('pause');
+    });
+
+    //判断视频是否加工好
+    var flag = 0;
+
+    document.getElementById("myPlayer").oncanplay = function () {
+        flag = 1;
+    };
+
+    // var now_time = getCurrentTime();
+    // console.log(now_time.substr(0,2));
+    //截图功能
+
+    //自动截图
+    /*setInterval(function (){
+        if(flag == 1 && ((getCurrentTime().substr(0,2) >= 7 && getCurrentTime().substr(0,2) < 9) ||
+            (getCurrentTime().substr(0,2) >= 16 && getCurrentTime().substr(0,2) < 18))){
+            screen();
+        }
+        // if(flag == 1){
+        //     screen();
+        // }
+    },60000);*/
+
+    // setInterval(function (){
+    //     screen1();
+    // },5000);
+
+    //手动截图
+    $("#capture").on('click',function () {
+        //screen();
+        screen1();
+    });
+
+    //行人检测
+    $("#person_detection").on('click',function () {
+        window.location.href = "person_detection.html";
+    });
+
+    //通过http接口访问萤石云后台拿到图片并保存到garage_img文件夹下
+    function screen1() {
+        var datas = {
+            imgName:getCurrentDate() + ' ' + getCurrentTime() + '.png'
+        };
+
+        $.ajax({
+            url: 'admin/getAndSaveImage',
+            type: 'post',
+            //dataType: 'json',
+            data: datas,
+            success: function (json){
+                console.log(json);
+                document.getElementById("currentImage").src = json;
+                //document.getElementById("currentImage1").src = json;
+            },
+            error: function(){
+                alert('false');
+            }
+        });
+
+    }
+
+    //截图显示到网页中，并保存到本地garage_img文件夹
+    function screen() {
+        console.log("start");
+        console.log("end");
+        var button = document.querySelectorAll('.screen')[0];
+        var video = document.querySelectorAll('video')[0];
+        var canvas = document.querySelectorAll('canvas')[0];
+        var ctx = canvas.getContext('2d');
+        var width = 820;
+        var height = 480;
+
+        canvas.width = width;
+        canvas.height = height;
+
+        $.ajax({
+            url: 'admin/get_status',
+            type: 'post',
+//                    dataType: 'json',
+            //data: datas,
+            success: function (json){
+                console.log(json);
+                if(json == 1){
+                    ctx.drawImage(video, 0, 0, width, height);  // 将video中的数据绘制到canvas里
+                    saveImage(canvas, getCurrentDate() + ' ' + getCurrentTime() + '.png');  // 存储图片到本地
+                }else{
+                    alert('false');
+                }
+            },
+            error: function(){
+                alert('false');
+            }
+        });
+
+            /*button.onclick = function () {
+                ctx.drawImage(video, 0, 0, width, height);  // 将video中的数据绘制到canvas里
+                saveImage(canvas, getCurrentDate() + ' ' + getCurrentTime() + '.png');  // 存储图片到本地
+                //saveImage(canvas, 'picture.png');
+            };*/
+        //};
+    }
+
+    function saveImage (canvas, filename) {
+        // 使用toDataURL方法将图像转换被base64编码的URL字符串
+        //var image = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
+        var image = canvas.toDataURL('image/png');
+        var datas = {
+            bases:image,
+            name:filename
+        };
+        console.log(datas);
+        $.ajax({
+            url: 'admin/get_image',
+            type: 'post',
+//                    dataType: 'json',
+            data: datas,
+            success: function (json){
+                console.log(json);
+                if(json == true){
+                    console.log('保存图片成功');
+                }else{
+                    alert('false');
+                }
+            },
+            error: function(ex){
+                console.log(ex.responseText);
+                alert('false');
+            }
+        });
+        //saveFile(image, filename || 'file_' + transferTime(new Date().getTime()) + '.png');
+
+    }
+
+    function saveFile(data, filename) {
+        //生成一个元素
+        var save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+        save_link.href = data;
+        save_link.download = filename;
+        var event = document.createEvent('MouseEvents');
+        event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        save_link.dispatchEvent(event);
+    }
+
+</script>
+</body>
+
+</html>

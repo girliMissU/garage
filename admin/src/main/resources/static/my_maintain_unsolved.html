@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>云端可视化监控管理系统</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="css/admin-style.css" />
+    <link rel="stylesheet" href="css/admin-media.css" class="skin-color" />
+
+    <!--勾选框-->
+    <link rel="stylesheet" href="css/uniform.css" />
+
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>维保服务</a>
+            <a href="#" class="current">保养工单系统</a>
+        </div>
+        <!--<h1>我的工单</h1>-->
+    </div>
+
+    <div class="container-fluid">
+        <div class="row-fluid" id="question_view" style="font-size: medium">
+            <div class="widget-box">
+                <div class="widget-title"> <span class="icon"> <i class="icon-th"></i> </span>
+                    <h5>
+		                <a href="my_maintain.html">
+			                <span>全部工单</span>
+			                <span id="totalNum" class="badge"></span>
+		                </a>
+		                <b>|</b>
+		                <a href="my_maintain_unsolved.html" style="color:#F00">
+			                <span>未解决</span>
+			                <span id="unsolvedNum" class="badge"></span>
+		                </a>
+	                </h5>
+                    <div class="buttons"><a href="my_maintain_submit.html" class="btn btn-mini"><i class="icon-plus"></i>提交工单</a></div>
+                    <!--<span class="label label-success">excited</span>-->
+                </div>
+                <div class="widget-content">
+                                <!--搜索框-->
+				<div class="row-fluid" style="font-size:left">
+                    <div class="span20" style="margin-bottom=50px">
+                        <div style="display:inline-block">
+	                    	<h4>关键词搜索</h4>
+	                    </div>
+	                    <div style="display:inline-block"></div>
+	                    <div style="display:inline-block"></div>
+	                    <div style="display:inline-block"></div>
+                    	<div style="display:inline-block">
+                            <input id="listId" type="text" class="span20" placeholder="搜索工单编号"/>
+                        </div>
+                        
+                        <div style="display:inline-block">
+                            <input id="listMtCompany" type="text" class="span20" placeholder="搜索维保单位"/>
+                        </div>
+                        <div style="display:inline-block">
+                            <input id="listContent" type="text" class="span20" placeholder="搜索择保养类型"/>
+                        </div>
+                        <div class="controls input-append date form_datetime" data-date="2019-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii" data-link-field="dtp_input1" style="display:inline-block;vertical-align:top;">
+                            <input size="16" type="text" placeholder="起始时间" value="" id="startTime">
+                            <span class="add-on"><i class="icon-remove"></i></span>
+                            <span class="add-on"><i class="icon-th"></i></span>
+                        </div>
+                        <div class="controls input-append date form_datetime" data-date="2019-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii" data-link-field="dtp_input1" style="display:inline-block;vertical-align:top;">
+                            <input size="16" type="text" placeholder="结束时间" value="" id="endTime">
+                            <span class="add-on"><i class="icon-remove"></i></span>
+                            <span class="add-on"><i class="icon-th"></i></span>
+                        </div>
+                        <div style="display:inline-block;vertical-align:top;">
+                        	<button id="search_item" class="btn btn-success" style="margin-bottom: 2%;">查找工单</button>
+                        	<button id="clear" class="btn btn-success" style="margin-bottom: 2%;">重置</button>
+                        </div>
+                    </div>
+				</div>
+                    <table class="table table-bordered table-striped with-check" id="fault_history_table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="title-table-checkbox" name="title-table-checkbox" /></th>
+                                <th>工单编号</th>
+                                <th>车库编号</th>
+                                <th>使用单位</th>
+                                <th>保养类型</th>
+                                <th>保养日期</th>
+                                <th>完成时间</th>
+                                <th>状态</th>
+                                <th>维保单位</th>
+                                <th>维保人员</th>
+                                <th>建单人</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                       <tbody id="fault_view">
+				<!-- 		<tbody id = "confirmDelete">--> 
+						</tbody>
+                    </table>
+
+                    <div style="margin-right: 87%;">
+                    <!--   
+                    	<a href="#myAlert" data-toggle="modal"><button id="deleteSelected" class="btn btn-danger">批量删除</button></a>
+                     -->    
+                     	<a href="#printAlert" data-toggle="modal"><button id="print" class="btn btn-primary">批量导出</button></a>
+                    </div>
+
+                </div>
+                <div id="myAlert" class="modal hide">
+                    <div class="modal-header">
+                        <button data-dismiss="modal" class="close" type="button">×</button>
+                        <h3>工单管理</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>是否确认删除该工单?</p>
+                    </div>
+                    <div class="modal-footer"> <a data-dismiss="modal" class="btn btn-danger" href="#" id="confirmDelete">删除</a> <a data-dismiss="modal" class="btn" href="#">取消</a> </div>
+                </div>
+
+                <div id="printAlert" class="modal hide">
+                    <div class="modal-header">
+                        <button data-dismiss="modal" class="close" type="button">×</button>
+                        <h3>工单管理导出pdf</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>是否确认导出工单记录?</p>
+                    </div>
+                    <div class="modal-footer"> <a data-dismiss="modal" class="btn btn-primary" href="#" id="confirmPrint">导出</a> <a data-dismiss="modal" class="btn" href="#">取消</a> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--footer-->
+<div class="footerpage"></div>
+<!--footer over-->
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/getNowDate.js"></script>
+
+<!--勾选框-->
+<script src="js/maruti.tables.js"></script>
+<script src="js/jquery.uniform.js"></script>
+<script src="js/select2.min.js"></script>
+<script src="js/jquery.dataTables.min.js"></script>
+<script src="js/maruti.js"></script>
+
+<!--导出excel-->
+<script src="js/excel/xlsx.full.min.js"></script>
+<!--<script lang="javascript" src="js/xlsx.core.min.js"></script>-->
+<!--<script type="text/javascript" src="js/Blob.js"></script>-->
+<script src="js/excel/FileSaver.js"></script>
+<script src="js/excel/Export2Excel.js"></script>
+
+<script type="text/javascript">
+    /*公共部分*/
+    $(".headerpage").load("header.html");
+    $(".footerpage").load("footer.html");
+
+    var html = "";
+    var $username = localStorage.getItem("username");
+    var datas = {
+        username: $username
+    };
+    //显示工单列表
+    $.ajax({
+        url: '/admin/get_maintenance_by_status',
+        type: 'get',
+        dataType: 'json',
+        data: datas,
+        success: function (json) {
+            console.log(json);
+            for(var i = 0;i < json.length;i++){
+                html = html +
+                    "<tr>" +
+                    "<td><input type='checkbox' name='faultList' value='"+ json[i].id +"'/></td>" +
+                    "<td>"+ json[i].id +"</td>" +
+                    "<td>"+ json[i].garageId +"</td>" +
+                    "<td>"+ json[i].address +"</td>" +
+                    "<td>"+ json[i].content +"</td>" +
+                    "<td>"+ transferTime(json[i].startDate) +"</td>";
+				if(null != json[i].endDate){
+					html = html + "<td>" + transferTime(json[i].endDate) + "</td>";
+                }else{
+                	html = html + "<td>" + "尚未完成" +"</td>";
+                    }
+				html = html +
+                	"<td>"+ json[i].status +"</td>" +
+                    "<td>"+ json[i].maintainCompany +"</td>" +
+                    "<td>"+ json[i].operator +"</td>" +
+                    "<td>"+ json[i].manager +"</td>" +
+                    "<td><button class=\"btn btn-danger btn-mini\" style='margin-right: 5px;' id='" +
+                    json[i].id + 
+                    "' onclick=\"deleteItem(" +json[i].id+ ")\">删除</button>" +
+                    "<button class=\"btn btn-primary btn-mini\" style='margin-right: 5px;' id='" + json[i].garageId +
+                    "' onclick=\"editItem(" +json[i].id+ ")\">处理</button>" + "</td>" + "</tr>";
+               //     "<a href=\"#myAlert\" data-toggle=\"modal\" class=\"btn btn-danger btn-mini\" id='" + json[i].id + "'>删除</a>" +
+               //		"<button class=\"btn btn-danger btn-mini\" style='margin-right: 5px;' id='" + json[i].id + "'>删除</button>" +
+            }
+            $("#fault_view").html(html);
+            $("#totalNum").text(localStorage.getItem("totalNum"));
+            $("#unsolvedNum").text(localStorage.getItem("unsolvedNum"));
+        },
+        error: function () {
+            alert('false');
+        }
+    });
+
+    //订单详情页跳转
+    function editItem(id) {
+        localStorage.setItem("maintain_id",id);
+        window.location.href = "my_maintain_edit.html";
+    };
+
+    //删除操作
+    function deleteItem(id) {
+    	alert("即将删除该条工单！");
+        console.log(id);
+        var datas = {
+				id : id
+            };
+            $.ajax({
+                url: '/admin/delete_maintenance',
+                type: 'get',
+                dataType: 'json',
+                data: datas,
+                success: function (json) {
+                    console.log(json);
+                    if(json["code"] == "0"){
+                        alert("删除成功！");
+                        location.reload();
+                    }else{
+                        alert("删除失败！");
+                    }
+                },
+                error: function () {
+                    alert('false');
+                }
+            })
+    };
+
+
+    //导出选中项
+    document.getElementById("confirmPrint").onclick= function(){
+        export_table_to_excel('fault_history_table','我的工单_' + getCurrentDate());
+    };
+  //搜索指定区域车库列表
+    $("#search_item").on('click', function () {
+
+    	var $id = $("#listId").val();
+		var $mtCompany = $("#listMtCompany").val();
+		var $content = $("#listContent").val();
+		var $startDate = $("#startTime").val();
+		var $endDate = $("#endTime").val();
+		var $status = '计划中';
+        var datas = {
+        	username: $username,
+        	id: $id,
+        	mtCompany: $mtCompany,
+        	content: $content,
+        	status: $status,
+        	startDate: $startDate,
+        	endDate: $endDate
+        };
+
+        console.log(datas);
+        $.ajax({
+            url: '/admin/searchByCondition',
+            type: 'get',
+            dataType: 'json',
+            data: datas,
+            success: function (json) {
+                console.log(json);
+                var html = "";
+                if(json.length == 0){
+                    alert("没有符合条件的工单");
+                } else {
+                	for(var i = 0;i < json.length;i++){
+                        html = html +
+                            "<tr>" +
+                            "<td><input type='checkbox' name='faultList' value='"+ json[i].id +"'/></td>" +
+                            "<td>"+ json[i].id +"</td>" +
+                            "<td>"+ json[i].garageId +"</td>" +
+                            "<td>"+ json[i].address +"</td>" +
+                            "<td>"+ json[i].content +"</td>" +
+                            "<td>"+ transferTime(json[i].startDate) +"</td>";
+        				if(null != json[i].endDate){
+        					html = html + "<td>" + transferTime(json[i].endDate) + "</td>";
+                        }else{
+                        	html = html + "<td>" + "尚未完成" +"</td>";
+                            }
+        				html = html +
+                        	"<td>"+ json[i].status +"</td>" +
+                            "<td>"+ json[i].maintainCompany +"</td>" +
+                            "<td>"+ json[i].operator +"</td>" +
+                            "<td>"+ json[i].manager +"</td>" +
+                            "<td><button class=\"btn btn-danger btn-mini\" style='margin-right: 5px;' id='" +
+                            json[i].id +  
+                            "' onclick=\"deleteItem(" +json[i].id+ ")\">删除</button>";
+                    	if(json[i].status!="已完成"){
+                    		html = html +
+                    		"<button class=\"btn btn-primary btn-mini\" style='margin-right: 5px;' id='" + json[i].garageId +
+                            "' onclick=\"editItem(" +json[i].id+ ")\">处理</button>" + "</td>" + "</tr>";
+                    		unsolvedNum++;
+                    	}else{
+                    		html = html + 
+                    		"<button class=\"btn btn-info btn-mini\" style='margin-right: 5px;' id='" + json[i].garageId +
+                            "' onclick=\"seeDetail(" +json[i].id+ ")\">详情</button>" + "</td>" + "</tr>";
+                    	}
+                    }
+                    $("#fault_view").html(html);
+                }
+            },
+            error: function () {
+                alert('false');
+            }
+        })
+        return false;
+    });
+  	//重置搜索框
+    $("#clear").on('click', function () {
+    	$("#listId").val("");
+		$("#listMtCompany").val("");
+		$("#listContent").val("");
+    });
+</script>
+
+</body>
+
+</html>

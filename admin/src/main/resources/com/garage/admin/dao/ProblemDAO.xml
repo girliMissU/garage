@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.garage.admin.dao.ProblemDAO">
+    <sql id="table">problem</sql>
+    <sql id="selectFields">id, garage_id, title, content, status, created_date, username
+    </sql>
+    <select id="selectLatestProblems" resultType="com.garage.admin.model.Problem">
+        SELECT
+        <include refid="selectFields"/>
+        FROM
+        <include refid="table"/>
+        <if test="username != 'admin'">
+            WHERE username = #{username}
+        </if>
+        ORDER BY id DESC
+        LIMIT #{offset},#{limit}
+    </select>
+</mapper>

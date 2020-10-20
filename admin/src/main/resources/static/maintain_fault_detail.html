@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>云端可视化监控管理系统</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="css/admin-style.css" />
+    <link rel="stylesheet" href="css/admin-media.css" class="skin-color" />
+
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>维保服务</a>
+            <a href="#" class="current">查看我的工单</a>
+        </div>
+        <!--<h1>查看我的工单</h1>-->
+    </div>
+
+    <div class="container-fluid">
+        <div class="row-fluid" id="question_detail">
+            <div class="widget-box">
+                <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-file"></i>
+                        </span>
+                    <h5>工单详情</h5>
+                    <div class="buttons"><a href="#" class="btn btn-mini" id="return"><i class="icon-home"></i>返回</a></div>
+                </div>
+                <div class="widget-content">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>工单编号</th>
+                            <th>问题内容</th>
+                            <th>车库编号</th>
+                            <th>故障类型</th>
+                            <th>提交人</th>
+                            <th>提交时间</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="fault_id_detail">
+                        <tr>
+                            <th id="question_id"></th>
+                            <th id="contents"></th>
+                            <th id="garage_id"></th>
+                            <th id="title"></th>
+                            <th id="manager"></th>
+                            <th id="time"></th>
+                            <th id="status"></th>
+                            <th><a href="#" class="btn btn-danger btn-mini" data-toggle="modal" data-target="#myModal">删除工单</a></th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="widget-box widget-chat">
+                <div class="widget-title">
+								<span class="icon">
+									<i class="icon-reply"></i>
+								</span>
+                    <h5>沟通记录</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <div class="chat-users panel-right2">
+                        <div class="panel-title">
+                            <h5>在线管理员</h5>
+                        </div>
+                        <div class="panel-content nopadding">
+                            <ul class="contact-list">
+                                <li id="manager-Sunil" class="online"><a href=""><img alt="" src="img/demo/av3.jpg" /> <span>admin</span></a></li>
+
+                                <!-- <li id="manager-Laukik"><a href=""><img alt="" src="img/demo/av2.jpg" /> <span>Laukik</span></a></li>
+                                 <li id="manager-vijay" class="online new"><a href=""><img alt="" src="img/demo/av3.jpg" /> <span>Vijay</span></a><span class="msg-count badge badge-info">3</span></li>
+                                 <li id="manager-Jignesh" class="online"><a href=""><img alt="" src="img/demo/av4.jpg" /> <span>Jignesh</span></a></li>
+                                 <li id="manager-Malay" class="online"><a href=""><img alt="" src="img/demo/av5.jpg" /> <span>Malay</span></a></li>-->
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="chat-content panel-left2">
+                        <div class="chat-messages" id="chat-messages">
+                            <div id="chat-messages-inner"></div>
+                        </div>
+                        <div class="chat-message well">
+                            <button class="btn btn-success">Send</button>
+                            <span class="input-box">
+                    <input type="text" name="msg-box" id="msg-box" />
+                    </span> </div>
+                    </div>
+                </div>
+            </div>
+            <div class="widget-box">
+                <div class="widget-title">
+                <span class="icon">
+                    <i class="icon-align-justify"></i>
+                </span>
+                    <h5>待您评价</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <form action="#" method="get" class="form-horizontal">
+                        <div class="control-group">
+                            <label class="control-label">问题是否解决</label>
+                            <div class="controls" style="float: left;margin-left: 2.5%;">
+                                <label><input type="radio" name="radios" /> 已解决</label>
+                                <label><input type="radio" name="radios" /> 未解决</label>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">我要反馈</label>
+                            <div class="controls">
+                                <textarea class="span20"  placeholder="请填写反馈内容" ></textarea>
+                            </div>
+                        </div>
+                        <!-- <div class="control-group">
+                             <label class="control-label">上传文件</label>
+                             <div class="controls">
+                                 <input type="file" />
+                             </div>
+                         </div>-->
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-success">提交</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 -->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title"><span class="label label-warning">提示</span></h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- 模态框主体 -->
+                <div class="modal-body">
+                    删除工单后，您将无法恢复和查看该工单，请谨慎操作，
+                    您确认要删除该工单吗？
+                </div>
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="delete_question">删除</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--footer-->
+<div class="footerpage"></div>
+<!--footer over-->
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/getNowDate.js"></script>
+<script type="text/javascript">
+    /*公共部分*/
+    $(".headerpage").load("header.html");
+    $(".footerpage").load("footer.html");
+
+    //工单详情页
+    $(document).ready(function () {
+
+        var $question_id = localStorage.getItem("question_id"); //是则传给车库id
+        var datas = {
+            id: $question_id
+        };
+        $.ajax({
+            url: 'admin/get_problem_by_id',
+            type: 'post',
+//                    dataType: 'json',
+            data: datas,
+            success: function (json){
+                console.log(json);
+
+                localStorage.setItem("question_id",json.id);
+                $("#question_id").html(json.id);
+                $("#contents").html(json.content);
+                $("#garage_id").html(json.garageId);
+                $("#title").html(json.title);
+                $("#manager").html(json.username);
+                $("#time").html(transferTime(json.createdDate));
+                $("#status").html(json.status);
+
+            },
+            error: function(){
+                alert('false');
+            }
+        });
+
+        //沟通交互
+        var data = {
+            questionId: $question_id
+        };
+        var html = "";
+        $.ajax({
+            url: 'admin/get_reply_by_questionId',
+            type: 'post',
+            //dataType: 'json',
+            data: data,
+            success: function (json) {
+                console.log(json);
+                for(var i = 0;i<json.length;i++){
+                    var profile = '';
+                    if(json[i].manager == "admin"){
+                        profile = 'img/demo/av3.jpg';
+                    }else{
+                        profile = 'img/demo/av2.jpg';
+                    }
+                    //填充聊天记录
+                    html = html + '<p class="manager-' + json[i].id + '" style="width: 22%;">'
+                        + '<span class="msg-block"><img src="' + profile+'" alt="" /><strong>' + json[i].manager
+                        + '</strong> <span class="time">- ' + transferTime(json[i].createdDate) + '</span>'
+                        + '<span class="msg">' + json[i].content + '</span></span></p>';
+                }
+                $("#chat-messages-inner").html(html);
+            },
+            error: function () {
+                alert('false');
+            }
+        });
+
+
+        //发送消息
+        $('.chat-message button').click(function(){
+            var input = $(this).siblings('span').children('input[type=text]');
+            if(input.val() != ''){
+                var reply = input.val();
+                var time = getNowDate();
+                add_message('我','img/demo/av2.jpg',input.val(),time,true);
+                var $username = localStorage.getItem("username");
+                add_reply($username,$question_id,reply);
+            }
+        });
+
+        $('.chat-message input').keypress(function(e){
+            if(e.which == 13) {
+                if($(this).val() != ''){
+                    var reply = $(this).val();
+                    var time = getNowDate();
+                    add_message('我','img/demo/av2.jpg',$(this).val(),time,true);
+                    var $username = localStorage.getItem("username");
+                    add_reply($username,$question_id,reply);
+                }
+            }
+        });
+
+        var i = 0;
+        function add_message(name,img,msg,time,clear) {
+            i = i + 1;
+            var  inner = $('#chat-messages-inner');
+            var id = 'msg-'+i;
+            var idname = name.replace(' ','-').toLowerCase();
+            inner.append('<p id="'+id+'" class="manager-'+idname+'" style="width:22%;margin: 10px 0px 0px 78%;">'
+                +'<span class="msg-block" style="background: none repeat scroll 0 0 #58cb72cf;"><img src="'+img+'" alt="" /><strong>'+name+'</strong> <span class="time">- '+time+'</span>'
+                +'<span class="msg">'+msg+'</span></span></p>');
+            $('#'+id).hide().fadeIn(800);
+            if(clear) {
+                $('.chat-message input').val('').focus();
+            }
+            $('#chat-messages').animate({ scrollTop: inner.height() },1000);
+
+        }
+
+        function add_reply(manager,question_id,content){
+            var datas={
+                manager:manager,
+                questionId:question_id,
+                content:content
+            };
+            $.ajax({
+                url: '/admin/add_reply',
+                type: 'post',
+                //dataType: 'json',
+                data: datas,
+                success: function (json) {
+                    console.log(json);
+                },
+                error: function () {
+                    alert('false');
+                }
+            });
+        }
+
+
+    });
+
+    //返回
+    $("#return").on('click', function (){
+        window.location.href = "maintain_fault_list.html";
+    });
+
+    //删除工单
+    $("#delete_question").on('click', function (){
+        var question_id = localStorage.getItem("question_id");
+        var datas = {
+            id:question_id
+        };
+        $.ajax({
+            url: 'admin/delete_problem_by_id',
+            type: 'post',
+            dataType: 'json',
+            data: datas,
+            success: function (json){
+                console.log(json);
+                if(json["code"] == "0"){
+                    alert("删除成功！")
+                    window.location.href = "maintain_fault_list.html";
+                }else{
+                    alert("删除失败！")
+                }
+            },
+            error: function(){
+                alert('false');
+            }
+        });
+    });
+
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>故障交流中心</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="../css/admin-style.css" />
+    <link rel="stylesheet" href="../css/admin-media.css" class="skin-color" />
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="center_index.html" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>首页</a>
+        </div>
+        <h1 id="view_name"></h1>
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid" id="history_fault" style="font-size: large">
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-title">
+								<span class="icon">
+									<i class="icon-file"></i>
+								</span>
+                        <h5>关注用户</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+                        <ul class="recent-posts" id="followee_list">
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div id="footer" class="span12"> 2018 &copy; LIFAN Admin.</div>
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/getNowDate.js"></script>
+<script type="text/javascript">
+
+    /*公共部分*/
+    $(".headerpage").load("center_header.html");
+
+    function GetRequest() {
+        var url = location.search; //获取url中"?"符后的字串
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            strs = str.split("&");
+            for(var i = 0; i < strs.length; i ++) {
+                theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+            }
+        }
+        return theRequest;
+    }
+
+    var Request = new Object();
+    Request = GetRequest();
+    var $viewname;
+    if(Request['username'] != null){
+        $viewname = Request['username']
+    }else{
+        $viewname = localStorage.getItem("viewname");
+    }
+
+    $("#view_name").html($viewname + "的关注");
+
+    var datas = {
+        username: $viewname
+    };
+    //显示问题列表
+    var html = "";
+    $.ajax({
+        url: '/center/followees',
+        type: 'get',
+        dataType: 'json',
+        data: datas,
+        success: function (json) {
+            console.log(json);
+            console.log(json.user.length);
+            for(var i = 0;i < json.user.length;i++){
+                if(json.ifFollow[i] == true){
+                    var guanzhu = '<button href="#" class="btn btn-success-active btn-mini"  id="follow' + json.user[i].id + '">已关注</button>'
+                }else{
+                    var guanzhu = '<button href="#" class="btn btn-success btn-mini"  id="follow' + json.user[i].id + '">关注</button>'
+                }
+                html = html +
+                    '<li>' +
+                    '<div class="user-thumb"> <img width="40" height="40" alt="User" src="../img/demo/av4.jpg"> </div>' +
+                    '<div class="article-post">' +
+                    '<div class="fr">'+ guanzhu + '</div>' +
+                    '<p><a href="#" id="'+ json.user[i].username +'">'+ json.user[i].username + '</a></p>' +
+                    '<p><a href=' + json.user[i].username + '"center_my_followees.html?username=">'+
+                    json.followeeCount[i] +'关注</a>/<a href=' + json.user[i].username + '"center_my_followers.html?username=">'+
+                    json.followerCount[i] +'粉丝</a>/0回答/16赞' +'</a></p>' +
+                    '</div>' +
+                    '</li>';
+            }
+
+            $("#followee_list").html(html);
+        },
+        error: function () {
+            alert('false');
+        }
+    });
+
+
+</script>
+</body>
+</html>

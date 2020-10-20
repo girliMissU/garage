@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>云端可视化监控管理系统</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="css/admin-style.css" />
+    <link rel="stylesheet" href="css/switch.css" />
+    <link rel="stylesheet" href="css/admin-media.css" class="skin-color" />
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>车库管理</a>
+            <a href="#" class="current">在线车库管理</a>
+        </div>
+        <h1>在线车库管理</h1>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row-fluid" style="font-size: medium">
+            <div class="span12">
+                <div class="widget-box" id="all_garage" style="display:block">
+                    <div class="widget-title"><span class="icon"><i class="icon-list"></i></span>
+                        <h5>在线车库管理</h5>
+                        <div class="buttons"><a href="garage_manage_add.html" class="btn btn-mini"><i class="icon-plus"></i>添加车库</a></div>
+                    </div>
+                    <div class="widget-content" id="show_garage">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--footer-->
+<div class="footerpage"></div>
+<!--footer over-->
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/getCookie.js"></script>
+
+<script type="text/javascript">
+    /*公共部分*/
+    $(".headerpage").load("header.html");
+    $(".footerpage").load("footer.html");
+
+    $.ajax({
+        url: '/admin/get_all_garage_info',
+        type: 'post',
+//  dataType: 'json',
+        data: datas,
+        success: function (json) {
+            console.log(json);
+            var html = "";
+            for(var i=0;i<json.length;i++) {
+                html = html + "<div class='well well-lg'><a href='#' id='"+ json[i].id + "'>"+
+                    "车库"+ json[i].id + ":" + json[i]['address']
+                    + "</a></div>";
+                $("#show_garage").html(html);
+            }
+
+        },
+        error: function () {
+            alert('false');
+        }
+    });
+
+    //车库详情页跳转
+    $("#show_garage").on('click', function (e) {
+        var ee = e.target;//取出来的元素对象
+        console.log(ee.tagName);
+        if(ee.tagName != "A")//判断是否是点击的链接
+        {
+            return; //不是则返回
+        }
+        var garage_id = ee.id; //是则传给车库id
+        localStorage.setItem("garage_id",garage_id);
+        window.location.href = "garage_manage_detail.html";
+    });
+
+</script>
+</body>
+
+</html>

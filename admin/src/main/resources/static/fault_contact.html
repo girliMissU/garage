@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>云端可视化监控管理系统</title><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="css/admin-style.css" />
+    <link rel="stylesheet" href="css/admin-media.css" class="skin-color" />
+</head>
+<body>
+
+<!--header-->
+<div class="headerpage"></div>
+<!--header over-->
+
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>故障管理</a>
+            <a href="#" class="current">报警联系人</a>
+        </div>
+        <!--<h1>报警联系人列表</h1>-->
+    </div>
+
+    <div class="container-fluid">
+        <div class="row-fluid" id="history_fault" style="font-size: medium">
+            <div class="widget-box">
+                <div class="widget-title"> <span class="icon"> <i class="icon-user"></i> </span>
+                    <h5>报警联系人列表</h5>
+                    <div class="buttons"><a href="garage_manage_detail.html" class="btn btn-mini"><i class="icon-list"></i>在线车库管理</a></div>
+                    <div class="buttons"><a href="fault_add_contact.html" class="btn btn-mini"><i class="icon-plus"></i>添加联系人</a></div>
+                    <!--<span class="label label-success">excited</span>-->
+                </div>
+                <div class="widget-content">
+                    <!--<table class="table table-bordered table-striped with-check">-->
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <!--<th><input type="checkbox" name="title-table-checkbox" /></th>-->
+                            <th>编号</th>
+                            <th>姓名</th>
+                            <th>手机号</th>
+                            <th>邮箱</th>
+                            <th>备注</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="fault_contact_list">
+
+                        </tbody>
+                    </table>
+
+                </div>
+                <div id="myAlert" class="modal hide">
+                    <div class="modal-header">
+                        <button data-dismiss="modal" class="close" type="button">×</button>
+                        <h3>联系人管理</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>是否确认删除该报警联系人?</p>
+                    </div>
+                    <div class="modal-footer"> <a data-dismiss="modal" class="btn btn-danger" href="#">删除</a> <a data-dismiss="modal" class="btn" href="#">取消</a> </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<!--footer-->
+<div class="footerpage"></div>
+<!--footer over-->
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/getCookie.js"></script>
+<script src="js/getNowDate.js"></script>
+<script type="text/javascript">
+    /*公共部分*/
+    $(".headerpage").load("header.html");
+    $(".footerpage").load("footer.html");
+
+    var html = "";
+
+    //显示历史故障列表
+    $.ajax({
+        url: '/admin/fault_contact_list',
+        type: 'post',
+        //dataType: 'json',
+        //data: datas,
+        success: function (json) {
+            console.log(json);
+            for(var i = 0;i < json.length;i++) {
+                html = html +
+                    "<tr>" +
+                    // "<td><input type='checkbox'/></td>" +
+                    "<td>" + json[i].id + "</td>" +
+                    "<td>" + json[i].username + "</td>" +
+                    "<td>" + json[i].phoneNum + "</td>" +
+                    "<td>" + json[i].email + "</td>" +
+                    "<td>" + json[i].exts + "</td>" +
+                    "<td><a href=\"#myAlert\" data-toggle=\"modal\" class=\"btn btn-danger btn-mini\" id='" + json[i].id + "'>删除</a>" +
+                    "</tr>";
+            }
+            $("#fault_contact_list").html(html);
+        },
+        error: function () {
+            alert('false');
+        }
+    });
+
+</script>
+
+</body>
+
+</html>
