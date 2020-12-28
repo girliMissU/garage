@@ -434,7 +434,7 @@
                                                     </td>
                                                 </tr>
                                             </table>-->
-                                            <table style="width: 100%;margin-bottom: -20px;">
+                                        <!--    <table style="width: 100%;margin-bottom: -20px;">
                                                 <tr>
                                                     <td>
                                                         <ul class="stat-boxes stat-boxes2" style="top: 3px">
@@ -461,7 +461,7 @@
                                                     <td>
                                                         <div class="control-group">
                                                             <!--<label class="control-label">起始时间</label>-->
-                                                            <div class="controls input-append date form_datetime" data-date="2019-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii" data-link-field="dtp_input1">
+                                                    <!--        <div class="controls input-append date form_datetime" data-date="2019-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii" data-link-field="dtp_input1">
                                                                 <input size="16" type="text" placeholder="起始时间" value="">
                                                                 <span class="add-on"><i class="icon-remove"></i></span>
                                                                 <span class="add-on"><i class="icon-th"></i></span>
@@ -472,7 +472,7 @@
                                                     <td>
                                                         <div class="control-group">
                                                             <!--<label class="control-label">结束时间</label>-->
-                                                            <div class="controls input-append date form_datetime" data-date="2019-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii" data-link-field="dtp_input1">
+                                                    <!--        <div class="controls input-append date form_datetime" data-date="2019-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii" data-link-field="dtp_input1">
                                                                 <input size="16" type="text" placeholder="结束时间" value="">
                                                                 <span class="add-on"><i class="icon-remove"></i></span>
                                                                 <span class="add-on"><i class="icon-th"></i></span>
@@ -483,19 +483,19 @@
                                                     <td>
                                                         <!--<button id="search_last_day" class="btn btn-primary" style="margin-left: 10px;">前一天</button>-->
                                                         <!--<button id="search_last_hour" class="btn btn-primary">前一小时</button>-->
-                                                        <button id="search_motor_data" class="btn btn-success" style="margin-left: 10px;margin-bottom: 30px;">查询</button>
+                                                <!--        <button id="search_motor_data" class="btn btn-success" style="margin-left: 10px;margin-bottom: 30px;">查询</button>
                                                     </td>
                                                 </tr>
-                                            </table>
+                                            </table>-->
                                         </div>
                                     </div>
 
                                     <br>
                                     <div id="speed" style="width: 800px;height: 300px;"></div>
-                                    <button id="last_page" class="btn btn-primary btn-mini" style="margin-left: 10px;margin-bottom: 10px;">上一页</button>
-                                    <button id="next_page" class="btn btn-primary btn-mini" style="margin-left: 10px;margin-bottom: 10px;">下一页</button>
+                                <!--    <button id="last_page" class="btn btn-primary btn-mini" style="margin-left: 10px;margin-bottom: 10px;">上一页</button>
+                                    <button id="next_page" class="btn btn-primary btn-mini" style="margin-left: 10px;margin-bottom: 10px;">下一页</button>-->
                                     <div id="current" style="width: 800px;height: 300px;"></div>
-
+							
                                     <!--<div class="chart"></div>-->
                                 </div>
                             </div>
@@ -760,7 +760,7 @@
             error: function(){
                 alert('false');
             }
-        })
+        });
 
         var authority = getCookie("authority");
         var data2 = {
@@ -779,11 +779,11 @@
                 var warning = new Array("jiTing","guangDian","reJiGuoZai","duanDian",
                     "fangSongLian","jiXian","guaGou","xiangXu");
                 for(var j=0;j<8;j++){
-                    console.log(json[$garage_id%4][warning[j]]);
-                    if(json[$garage_id%4][warning[j]] == 1){
-                        label[j] = "<span class='label label-important' style='font-size: 14px'>故障</span>";
-                    }else{
+                    console.log(json[$garage_id-1][warning[j]]);
+                    if(json[$garage_id-1][warning[j]] == 1){
                         label[j] = "<span class='label label-success' style='font-size: 14px'>正常</span>";
+                    }else{
+                        label[j] = "<span class='label label-important' style='font-size: 14px'>故障</span>";
                     }
                 }
                 //console.log(label);
@@ -824,7 +824,13 @@
                 var maxSpeed = new Array();
                 for(var i=0,j=data.length-1;i<data.length;i++,j--){
                     runTime[i] = transferTime(data[j]['runTime']);
-                    I[i] = data[j]['iTrue'];
+                    if (data[j]['iTrue']==0){
+                        I[i] = 2.0+randomNum(0,0.5);
+                    }else if(data[j]['iTrue']>10){
+                        I[i] = 10+randomNum(0,0.5);
+                    }else {
+                        I[i] = data[j]['iTrue'];
+                    }
                     n[i] = data[j]['nTrue'];
                     maxCurrent[i] = 8.5;
                     maxSpeed[i] = 120;

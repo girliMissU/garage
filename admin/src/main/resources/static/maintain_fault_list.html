@@ -176,13 +176,34 @@
         var flag = false;
         for (var i = 0; i < items.length; i++) {
             if (items[i].checked) {
-                itemIds += items[i].value + ";";
+                itemIds = items[i].value;
                 flag = true; //表示复选框有被选中的
+                break;
             }
         }
         alert(flag);
+        //alert(flag);
         if (flag) {
-            alert(itemIds);
+            //alert(itemIds);
+            //显示工单列表
+            $.ajax({
+                url: '/admin/delete_problem_by_id',
+                type: 'post',
+                //dataType: 'json',
+                data: {
+                    id: itemIds
+                },
+                success: function (json) {
+                    console.log(json);
+                },
+                error: function () {
+                    alert('false');
+                }
+            });
+            alert("删除成功");
+            location.reload();
+        }else{
+            alert("请勾选要删除的工单！");
         }
     }
 

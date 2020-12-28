@@ -2,6 +2,7 @@ package com.garage.admin.dao;
 
 import com.garage.admin.model.MotorRunningData;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.Date;
@@ -21,5 +22,5 @@ public interface MotorRunningDataDAO {
     List<MotorRunningData> selectRecently();
 
     @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where run_time >= #{startTime} and run_time <= #{endTime}"})
-    List<MotorRunningData> selectRange(Date startTime, Date endTime);
+    List<MotorRunningData> selectRange(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
 }

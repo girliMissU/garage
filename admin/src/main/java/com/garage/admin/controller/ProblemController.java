@@ -38,7 +38,7 @@ public class ProblemController {
             problem.setCreatedDate(new Date());
             problem.setTitle(title);
             problem.setUsername(username);
-            problem.setStatus("已受理");
+            problem.setStatus("未受理");
             if (problemService.addProblem(problem) > 0) {
                 return GarageUtil.getJSONString(0);
             }
@@ -61,8 +61,8 @@ public class ProblemController {
     }
 
     @RequestMapping(value="/delete_problem_by_id", method = {RequestMethod.POST})
-    public String deleteProblemById(@RequestParam("id") int id) {
-        if(problemService.deleteById(id) == 0){
+    public String deleteProblemById(@RequestParam("id") Integer id) {
+        if(problemService.deleteById(id) > 0){
             return GarageUtil.getJSONString(0,"成功");
         }
         return GarageUtil.getJSONString(1,"失败");
