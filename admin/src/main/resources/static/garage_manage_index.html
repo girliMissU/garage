@@ -434,8 +434,8 @@
                                                     </td>
                                                 </tr>
                                             </table>-->
-                                        <!--    <table style="width: 100%;margin-bottom: -20px;">
-                                                <tr>
+                                            <table style="width: 100%;margin-bottom: -20px;">
+                                             <!--   <tr>
                                                     <td>
                                                         <ul class="stat-boxes stat-boxes2" style="top: 3px">
                                                             <li>
@@ -456,13 +456,13 @@
                                                         <button id="" class="btn btn-primary" style="margin-left: 10px;margin-bottom: 11px;">刷新</button>
                                                     </td>
                                                 </tr>
-                                                <tr>
+                                                <tr>-->
                                                 <tr style="height: 90px;">
                                                     <td>
                                                         <div class="control-group">
                                                             <!--<label class="control-label">起始时间</label>-->
-                                                    <!--        <div class="controls input-append date form_datetime" data-date="2019-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii" data-link-field="dtp_input1">
-                                                                <input size="16" type="text" placeholder="起始时间" value="">
+                                                            <div class="controls input-append date form_datetime" data-date="2019-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii" data-link-field="dtp_input1">
+                                                                <input size="16" type="text" placeholder="起始时间" id="startTime">
                                                                 <span class="add-on"><i class="icon-remove"></i></span>
                                                                 <span class="add-on"><i class="icon-th"></i></span>
                                                             </div>
@@ -472,8 +472,8 @@
                                                     <td>
                                                         <div class="control-group">
                                                             <!--<label class="control-label">结束时间</label>-->
-                                                    <!--        <div class="controls input-append date form_datetime" data-date="2019-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii" data-link-field="dtp_input1">
-                                                                <input size="16" type="text" placeholder="结束时间" value="">
+                                                            <div class="controls input-append date form_datetime" data-date="2019-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii" data-link-field="dtp_input1">
+                                                                <input size="16" type="text" placeholder="结束时间" id="endTime">
                                                                 <span class="add-on"><i class="icon-remove"></i></span>
                                                                 <span class="add-on"><i class="icon-th"></i></span>
                                                             </div>
@@ -483,17 +483,17 @@
                                                     <td>
                                                         <!--<button id="search_last_day" class="btn btn-primary" style="margin-left: 10px;">前一天</button>-->
                                                         <!--<button id="search_last_hour" class="btn btn-primary">前一小时</button>-->
-                                                <!--        <button id="search_motor_data" class="btn btn-success" style="margin-left: 10px;margin-bottom: 30px;">查询</button>
+                                                       <button id="search_motor_data" class="btn btn-success" style="margin-left: 10px;margin-bottom: 30px;">查询</button>
                                                     </td>
                                                 </tr>
-                                            </table>-->
+                                            </table>
                                         </div>
                                     </div>
 
                                     <br>
                                     <div id="speed" style="width: 800px;height: 300px;"></div>
-                                <!--    <button id="last_page" class="btn btn-primary btn-mini" style="margin-left: 10px;margin-bottom: 10px;">上一页</button>
-                                    <button id="next_page" class="btn btn-primary btn-mini" style="margin-left: 10px;margin-bottom: 10px;">下一页</button>-->
+                                    <button id="last_page" class="btn btn-primary btn-mini" style="margin-left: 10px;margin-bottom: 10px;">上一页</button>
+                                    <button id="next_page" class="btn btn-primary btn-mini" style="margin-left: 10px;margin-bottom: 10px;">下一页</button>
                                     <div id="current" style="width: 800px;height: 300px;"></div>
 							
                                     <!--<div class="chart"></div>-->
@@ -755,7 +755,7 @@
                 }
                 html = html + "</table></div>";
                 $("#garage1_CarPlace").html(html);
-                console.log(html);
+                //console.log(html);
             },
             error: function(){
                 alert('false');
@@ -1086,6 +1086,191 @@
 
         getRunningData();
     });
+
+    //搜索历史电机电流曲线
+    $("#search_motor_data").on('click',function () {
+        var $startDate = $("#startTime").val();
+        var $endDate = $("#endTime").val();
+        if($startDate.length>0){
+            $startDate += ":00";
+        }else{
+            alert("请选择起始时间");
+        }
+        if($endDate.length>0){
+            $endDate += ":00";
+        }else{
+            alert("请选择结束时间");
+        }
+        var datas = {
+            start_time: $startDate,
+            end_time: $endDate
+        };
+        $.ajax({
+                url: '/admin/get_motor_data',
+                type: 'get',
+//  dataType: 'json',
+                data: datas,
+                success: function (data) {
+                    console.log(data);
+                    var runTime = new Array();
+                    var I = new Array();
+                    var n = new Array();
+                    var maxCurrent = new Array();
+                    var maxSpeed = new Array();
+                    for(var i=0,j=data.length-1;i<data.length;i++,j--){
+                        runTime[i] = transferTime(data[j]['runTime']);
+                        if(data[j]['iTrue']>10){
+                            I[i] = 10+randomNum(0,0.5);
+                        }else {
+                            I[i] = data[j]['iTrue'];
+                        }
+                        n[i] = data[j]['nTrue'];
+                        maxCurrent[i] = 8.5;
+                        maxSpeed[i] = 120;
+                    }
+
+                    //myChart.hideLoading();    //隐藏加载动画
+                    var speedOption = {
+                        //backgroundColor:'blue', //设置背景颜色
+                        title: {
+                            text: '电机转速'
+                        },
+                        tooltip: {},
+                        legend: {
+                            data:['转速(r/min)','转速阈值(r/min)']
+                        },
+                        xAxis: {
+                            axisLabel : {//坐标轴刻度标签的相关设置。
+                                formatter : function(params){
+                                    var newParamsName = "";// 最终拼接成的字符串
+                                    var paramsNameNumber = params.length;// 实际标签的个数
+                                    var provideNumber = 10;// 每行能显示的字的个数
+                                    var rowNumber = Math.ceil(paramsNameNumber / provideNumber);// 换行的话，需要显示几行，向上取整
+                                    /**
+                                     * 判断标签的个数是否大于规定的个数， 如果大于，则进行换行处理 如果不大于，即等于或小于，就返回原标签
+                                     */
+                                    // 条件等同于rowNumber>1
+                                    if (paramsNameNumber > provideNumber) {
+                                        /** 循环每一行,p表示行 */
+                                        for (var p = 0; p < rowNumber; p++) {
+                                            var tempStr = "";// 表示每一次截取的字符串
+                                            var start = p * provideNumber;// 开始截取的位置
+                                            var end = start + provideNumber;// 结束截取的位置
+                                            // 此处特殊处理最后一行的索引值
+                                            if (p == rowNumber - 1) {
+                                                // 最后一次不换行
+                                                tempStr = params.substring(start, paramsNameNumber);
+                                            } else {
+                                                // 每一次拼接字符串并换行
+                                                tempStr = params.substring(start, end) + "\n";
+                                            }
+                                            newParamsName += tempStr;// 最终拼成的字符串
+                                        }
+
+                                    } else {
+                                        // 将旧标签的值赋给新标签
+                                        newParamsName = params;
+                                    }
+                                    //将最终的字符串返回
+                                    return newParamsName
+                                }
+                            },
+                            name:'时间',
+                            data: runTime
+                            //data:[]
+                        },
+                        yAxis: {
+                            name:'转速(r/min)'
+                        },
+                        series: [{
+                            name: '转速(r/min)',
+                            type: 'line',
+                            data: n
+                        }, {
+                            name: '转速阈值(r/min)',
+                            type: 'line',
+                            data: maxSpeed
+                        }
+                        ]
+                    };
+
+                    var currentOption = {
+                        //backgroundColor:'blue', //设置背景颜色
+                        title: {
+                            text: '电机电流'
+                        },
+                        tooltip: {},
+                        legend: {
+                            data:['电流(A)','电流阈值(A)']
+                        },
+                        xAxis: {
+                            axisLabel : {//坐标轴刻度标签的相关设置。
+                                formatter : function(params){
+                                    var newParamsName = "";// 最终拼接成的字符串
+                                    var paramsNameNumber = params.length;// 实际标签的个数
+                                    var provideNumber = 10;// 每行能显示的字的个数
+                                    var rowNumber = Math.ceil(paramsNameNumber / provideNumber);// 换行的话，需要显示几行，向上取整
+                                    /**
+                                     * 判断标签的个数是否大于规定的个数， 如果大于，则进行换行处理 如果不大于，即等于或小于，就返回原标签
+                                     */
+                                    // 条件等同于rowNumber>1
+                                    if (paramsNameNumber > provideNumber) {
+                                        /** 循环每一行,p表示行 */
+                                        for (var p = 0; p < rowNumber; p++) {
+                                            var tempStr = "";// 表示每一次截取的字符串
+                                            var start = p * provideNumber;// 开始截取的位置
+                                            var end = start + provideNumber;// 结束截取的位置
+                                            // 此处特殊处理最后一行的索引值
+                                            if (p == rowNumber - 1) {
+                                                // 最后一次不换行
+                                                tempStr = params.substring(start, paramsNameNumber);
+                                            } else {
+                                                // 每一次拼接字符串并换行
+                                                tempStr = params.substring(start, end) + "\n";
+                                            }
+                                            newParamsName += tempStr;// 最终拼成的字符串
+                                        }
+
+                                    } else {
+                                        // 将旧标签的值赋给新标签
+                                        newParamsName = params;
+                                    }
+                                    //将最终的字符串返回
+                                    return newParamsName
+                                }
+                            },
+                            name:'时间',
+                            data: runTime
+                            //data:[]
+                        },
+                        yAxis: {
+                            name:'电流(A)'
+                        },
+                        series: [{
+                            name: '电流(A)',
+                            type: 'line',
+                            data: I,
+                            itemStyle:{
+                                lineStyle:{
+                                    color:'#87CEFA'
+                                }
+                            }
+                        },{
+                            name: '电流阈值(A)',
+                            type: 'line',
+                            data: maxCurrent
+                        }]
+                    };
+                    //myChart.showLoading();
+                    speedChart.setOption(speedOption);
+                    currentChart.setOption(currentOption);
+
+                },
+                error: function () {
+                    alert('false');
+                }
+        });
+    })
 
 </script>
 </body>

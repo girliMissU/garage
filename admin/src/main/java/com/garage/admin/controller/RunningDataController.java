@@ -52,6 +52,9 @@ public class RunningDataController {
     public List<MotorRunningData> getRunningDataByDate(@RequestParam("start_time") String startTime,
                                                        @RequestParam("end_time") String endTime){
         try {
+            if (startTime==null||startTime.length()==0||endTime==null||endTime.length()==0){
+                return motorRunningDataDAO.selectRecently();
+            }
             return motorRunningDataDAO.selectRange(stringToDate(startTime),stringToDate(endTime));
         } catch (ParseException e) {
             log.error("日期转换错误"+e);
