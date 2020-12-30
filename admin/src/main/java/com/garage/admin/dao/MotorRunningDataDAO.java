@@ -23,4 +23,7 @@ public interface MotorRunningDataDAO {
 
     @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where run_time >= #{startTime} and run_time <= #{endTime} order by run_time desc limit 20"})
     List<MotorRunningData> selectRange(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
+    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where run_time >= #{startTime} and run_time <= #{endTime} order by run_time desc"})
+    List<MotorRunningData> selectRangeAll(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
 }
