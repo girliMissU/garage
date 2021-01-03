@@ -825,7 +825,7 @@
                 for(var i=0,j=data.length-1;i<data.length;i++,j--){
                     runTime[i] = transferTime(data[j]['runTime']);
                     if (data[j]['iTrue']==0){
-                        I[i] = 2.0+randomNum(0,0.5);
+                        I[i] = 1.0+randomNum(0,0.5);
                     }else if(data[j]['iTrue']>10){
                         I[i] = 10+randomNum(0,0.5);
                     }else {

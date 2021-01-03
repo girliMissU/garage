@@ -45,7 +45,20 @@ public class RunningDataController {
     //最近的电机电流与转速运行数据
     @RequestMapping(value = "/motor_running_data",method = {RequestMethod.POST})
     public List<MotorRunningData> getAllRunningData() {
-        return motorRunningDataDAO.selectRecently();
+        List<MotorRunningData> data = motorRunningDataDAO.selectRecently();
+        if (data==null||data.isEmpty()){
+            return new ArrayList<>();
+        }
+        Date now = new Date();
+        if (Math.abs(now.getTime()-data.get(0).getRunTime().getTime())>18000){
+            MotorRunningData nowData = new MotorRunningData();
+            nowData.setnTrue("0");
+            nowData.setiTrue("0");
+            nowData.setRunTime(now);
+            data.add(0,nowData);
+            data.remove(data.size()-1);
+        }
+        return data;
     }
 
     @GetMapping(value = "/get_motor_data")

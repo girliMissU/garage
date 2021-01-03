@@ -13,7 +13,7 @@ $(function(){
                 Microsoft.Translator.Widget.Translate('zh-CHS', 'en', onProgress, onError, onComplete, onRestoreOriginal, 2000);
             }
         }
-    }
+    };
     function onProgress(value) {
     }
     function onError(error) {
