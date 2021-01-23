@@ -1,13 +1,8 @@
 package com.garage.admin.controller;
 
-import com.garage.admin.dao.FaultContactDAO;
-import com.garage.admin.dao.FaultHistoryDAO;
-import com.garage.admin.dao.FaultTriggerDAO;
-import com.garage.admin.dao.FaultWarningDAO;
-import com.garage.admin.model.FaultContact;
-import com.garage.admin.model.FaultHistory;
-import com.garage.admin.model.FaultTrigger;
-import com.garage.admin.model.FaultWarning;
+import com.garage.admin.dao.*;
+import com.garage.admin.model.*;
+import com.garage.admin.service.HttpInterfaceService;
 import com.garage.admin.util.GarageUtil;
 import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
@@ -15,9 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/admin")
@@ -36,6 +30,12 @@ public class FaultWarningController {
     @Autowired
     FaultTriggerDAO faultTriggerDAO;
 
+    @Autowired
+    MotorRunningDataDAO motorRunningDataDAO;
+
+    @Autowired
+    HttpInterfaceService httpService;
+
     //故障总览
     @RequestMapping(value = "/all_fault",method = {RequestMethod.POST})
     public List<FaultWarning> getAllGarage(@Param("authority") int authority) {
@@ -46,6 +46,33 @@ public class FaultWarningController {
         }else{
             list.add(faultWarningDAO.selectById(authority));
         }
+        return list;
+    }
+
+    @RequestMapping(value = "/fault",method = {RequestMethod.GET})
+    public List<FaultWarning> getFaultNow(@Param("authority") int authority) throws InterruptedException {
+        //获取最新电机数据
+        final List<MotorRunningData> data = motorRunningDataDAO.selectRecently(1);
+        Date now = new Date();
+        if (now.getTime()-data.get(0).getRunTime().getTime()>10000){
+            //发送0数据，0肯定正常啊？！
+            faultWarningDAO.updateFaultResult(1,1,0);
+            return faultWarningDAO.selectAll();
+        }
+        //向算法服务器发送请求
+        Thread thread = new Thread(() -> {
+            Map<String,String> params = new HashMap<>(2);
+            params.put("R",data.get(0).getnTrue());
+            params.put("I",data.get(0).getiTrue());
+            final String response = httpService.sendPost("http://127.0.0.1:80",params);
+            //处理结果并更新数据库fault_warning
+            System.out.println(response);
+
+        });
+        thread.start();
+        TimeUnit.SECONDS.sleep(3);
+        //获取数据返回
+        List<FaultWarning> list = faultWarningDAO.selectAll();
         return list;
     }
 

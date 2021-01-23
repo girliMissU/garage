@@ -1,17 +1,29 @@
 package com.garage.admin.service;
 
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author LIFAN
  * 2019/3/5 19:08
  */
 @Service
 public class HttpInterfaceService {
+    @Autowired
+    RestTemplate restTemplate;
+
     /**
      * 调用对方接口方法
      * @param path 对方或第三方提供的路径
@@ -153,6 +165,51 @@ public class HttpInterfaceService {
 //        interfaceUtil("http://192.168.10.89:8080/eoffice-restful/resources/sys/oadata", "usercode=10012");
 //        interfaceUtil("http://192.168.10.89:8080/eoffice-restful/resources/sys/oaholiday",
 //                    "floor=first&year=2017&month=9&isLeader=N");
+    }
+
+    /**
+     * 生成post请求的JSON请求参数
+     * 请求示例:
+     * {
+     * "id":1,
+     * "name":"张耀烽"
+     * }
+     *
+     * @return
+     */
+    public HttpEntity<Map<String, String>> generatePostJson(Map<String, String> jsonMap) {
+
+        //如果需要其它的请求头信息、都可以在这里追加
+        HttpHeaders httpHeaders = new HttpHeaders();
+
+        MediaType type = MediaType.parseMediaType("application/json;charset=UTF-8");
+
+        httpHeaders.setContentType(type);
+
+        HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(jsonMap, httpHeaders);
+
+        return httpEntity;
+    }
+
+
+    /**
+     * post请求、请求参数为json
+     *
+     * @return
+     */
+    public String sendPost(String uri, Map<String, String> jsonMap) {
+//        String uri = "http://127.0.0.1:80";
+
+//        Map<String, String> jsonMap = new HashMap<>(6);
+//        jsonMap.put("name", "张耀烽");
+//        jsonMap.put("sex", "男");
+
+        ResponseEntity<String> apiResponse = restTemplate.postForEntity(
+                        uri,
+                        generatePostJson(jsonMap),
+                        String.class
+                );
+        return apiResponse.getBody();
     }
 }
 

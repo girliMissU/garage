@@ -230,23 +230,13 @@
                                                     <td>
                                                         <ul class="stat-boxes stat-boxes2" style="top: 3px">
                                                             <li>
-                                                                <div class="left peity_bar_neutral" style="width: 90px;">断电报警</div>
-                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong id="duandian" style="margin-top: 0px;font-size: 18px"></strong></div>
-                                                            </li>
-                                                        </ul>
-                                                    </td>
-                                                </tr>
-
-                                                <tr>
-                                                    <td>
-                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
-                                                            <li>
                                                                 <div class="left peity_bar_neutral" style="width: 90px;">防松链报警</div>
                                                                 <div class="right" style="padding: 9px 0px 7px 0;"><strong id="fangsonglian" style="margin-top: 0px;font-size: 18px"></strong></div>
                                                             </li>
 
                                                         </ul>
                                                     </td>
+                                                <tr>
                                                     <td>
                                                         <ul class="stat-boxes stat-boxes2" style="top: 3px">
                                                             <li>
@@ -255,8 +245,6 @@
                                                             </li>
                                                         </ul>
                                                     </td>
-                                                </tr>
-                                                <tr>
                                                     <td>
                                                         <ul class="stat-boxes stat-boxes2" style="top: 3px">
                                                             <li>
@@ -265,29 +253,23 @@
                                                             </li>
                                                         </ul>
                                                     </td>
-                                                    <td>
-                                                        <ul class="stat-boxes stat-boxes2" style="top: 3px">
-                                                            <li>
-                                                                <div class="left peity_bar_neutral" style="width: 90px;">相序报警</div>
-                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong id="xiangxu" style="margin-top: 0px;font-size: 18px"></strong></div>
-                                                            </li>
-                                                        </ul>
-                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
                                                         <ul class="stat-boxes stat-boxes2" style="top: 3px">
                                                             <li>
-                                                                <div class="left peity_bar_neutral" style="width: 90px;">横移电机诊断结果</div>
-                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong id="HengYiMotor" style="margin-top: 0px;font-size: 18px"><span class='label label-success' style='font-size: 14px'>正常</span></strong></div>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">电机转速诊断结果</div>
+<!--                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong id="HengYiMotor" style="margin-top: 0px;font-size: 18px"><span class='label label-success' style='font-size: 14px'>正常</span></strong></div>-->
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong id="rotate_result" style="margin-top: 0px;font-size: 18px"></strong></div>
                                                             </li>
                                                         </ul>
                                                     </td>
                                                     <td>
                                                         <ul class="stat-boxes stat-boxes2" style="top: 3px">
                                                             <li>
-                                                                <div class="left peity_bar_neutral" style="width: 90px;">升降电机诊断结果</div>
-                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong id="ShengJiangMotor" style="margin-top: 0px;font-size: 18px"><span class='label label-success' style='font-size: 14px'>正常</span></strong></div>
+                                                                <div class="left peity_bar_neutral" style="width: 90px;">电机电流诊断结果</div>
+<!--                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong id="ShengJiangMotor" style="margin-top: 0px;font-size: 18px"><span class='label label-success' style='font-size: 14px'>正常</span></strong></div>-->
+                                                                <div class="right" style="padding: 9px 0px 7px 0;"><strong id="current_result" style="margin-top: 0px;font-size: 18px"></strong></div>
                                                             </li>
                                                         </ul>
                                                     </td>
@@ -769,15 +751,17 @@
 
         //显示车库故障报警标志
         $.ajax({
-            url: '/admin/all_fault',
-            type: 'post',
+            // url: '/admin/all_fault',
+            // type: 'post',
+            url: '/admin/fault',
+            type: 'get',
 //  dataType: 'json',
             data: data2,
             success: function (json) {
                 console.log(json);
                 var label = new Array();
-                var warning = new Array("jiTing","guangDian","reJiGuoZai","duanDian",
-                    "fangSongLian","jiXian","guaGou","xiangXu");
+                var warning = new Array("jiTing","guangDian","reJiGuoZai",
+                    "fangSongLian","jiXian","guaGou","rotate","current");
                 for(var j=0;j<8;j++){
                     console.log(json[$garage_id-1][warning[j]]);
                     if(json[$garage_id-1][warning[j]] == 1){
@@ -791,11 +775,11 @@
                 $("#jiting").html(label[0]);
                 $("#guangdian").html(label[1]);
                 $("#rejiguozai").html(label[2]);
-                $("#duandian").html(label[3]);
-                $("#fangsonglian").html(label[4]);
-                $("#jixian").html(label[5]);
-                $("#guagou").html(label[6]);
-                $("#xiangxu").html(label[7]);
+                $("#fangsonglian").html(label[3]);
+                $("#jixian").html(label[4]);
+                $("#guagou").html(label[5]);
+                $("#rotate_result").html(label[6]);
+                $("#current_result").html(label[7]);
             },
             error: function () {
                 alert('false');

@@ -18,12 +18,12 @@ public interface MotorRunningDataDAO {
     String INSERT_FIELDS = " run_time, i, n, i_true, n_true ";
     String SELECT_FIELDS = " id, " + INSERT_FIELDS;
 
-    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " order by run_time desc limit 20"})
-    List<MotorRunningData> selectRecently();
+    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " order by id desc limit #{limit}"})
+    List<MotorRunningData> selectRecently(@Param("limit") int limit);
 
-    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where run_time >= #{startTime} and run_time <= #{endTime} order by run_time desc limit 20"})
+    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where run_time >= #{startTime} and run_time <= #{endTime} order by id desc limit 20"})
     List<MotorRunningData> selectRange(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
 
-    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where run_time >= #{startTime} and run_time <= #{endTime} order by run_time desc"})
+    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where run_time >= #{startTime} and run_time <= #{endTime} order by id desc"})
     List<MotorRunningData> selectRangeAll(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
 }
