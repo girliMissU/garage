@@ -51,7 +51,7 @@ public class FaultWarningController {
 
     @RequestMapping(value = "/fault",method = {RequestMethod.GET})
     public List<FaultWarning> getFaultNow(@Param("authority") int authority) throws InterruptedException {
-        //获取最新电机数据
+        /*//获取最新电机数据
         final List<MotorRunningData> data = motorRunningDataDAO.selectRecently(1);
         Date now = new Date();
         if (now.getTime()-data.get(0).getRunTime().getTime()>10000){
@@ -70,7 +70,7 @@ public class FaultWarningController {
 
         });
         thread.start();
-        TimeUnit.SECONDS.sleep(3);
+        TimeUnit.SECONDS.sleep(3);*/
         //获取数据返回
         List<FaultWarning> list = faultWarningDAO.selectAll();
         return list;

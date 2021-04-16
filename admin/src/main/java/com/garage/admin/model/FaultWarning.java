@@ -8,8 +8,41 @@ public class FaultWarning {
     private int duanDian;
     private int fangSongLian;
     private int jiXian;
-    private int guaGou;
-    private int xiangXu;
+    //private int guaGou;
+    //private int xiangXu;
+    private int rotate;
+    private int current;
+
+    @Override
+    public String toString() {
+        return "FaultWarning{" +
+                "id=" + id +
+                ", jiTing=" + jiTing +
+                ", guangDian=" + guangDian +
+                ", reJiGuoZai=" + reJiGuoZai +
+                ", duanDian=" + duanDian +
+                ", fangSongLian=" + fangSongLian +
+                ", jiXian=" + jiXian +
+                ", rotate=" + rotate +
+                ", current=" + current +
+                '}';
+    }
+
+    public int getRotate() {
+        return rotate;
+    }
+
+    public void setRotate(int rotate) {
+        this.rotate = rotate;
+    }
+
+    public int getCurrent() {
+        return current;
+    }
+
+    public void setCurrent(int current) {
+        this.current = current;
+    }
 
     public FaultWarning(){
 
@@ -71,19 +104,4 @@ public class FaultWarning {
         this.jiXian = jiXian;
     }
 
-    public int getGuaGou() {
-        return guaGou;
-    }
-
-    public void setGuaGou(int guaGou) {
-        this.guaGou = guaGou;
-    }
-
-    public int getXiangXu() {
-        return xiangXu;
-    }
-
-    public void setXiangXu(int xiangXu) {
-        this.xiangXu = xiangXu;
-    }
 }

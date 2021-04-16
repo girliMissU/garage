@@ -639,8 +639,12 @@
 
 
     //默认显示车库1的基本信息与故障报警标志
-
-    showGarageBasicAndFault(1);
+    // 循环定时器
+    var timer = setInterval(function(){
+        // console.log("循环定时器");
+        showGarageBasicAndFault(1);
+    }, 8000);
+    // showGarageBasicAndFault(1);
 
     //根据车库id查找车库基本信息故障报警信息
     function showGarageBasicAndFault($garage_id) {
@@ -758,12 +762,12 @@
 //  dataType: 'json',
             data: data2,
             success: function (json) {
-                console.log(json);
+                //console.log(json);
                 var label = new Array();
                 var warning = new Array("jiTing","guangDian","reJiGuoZai",
                     "fangSongLian","jiXian","guaGou","rotate","current");
                 for(var j=0;j<8;j++){
-                    console.log(json[$garage_id-1][warning[j]]);
+                    //console.log(json[$garage_id-1][warning[j]]);
                     if(json[$garage_id-1][warning[j]] == 1){
                         label[j] = "<span class='label label-success' style='font-size: 14px'>正常</span>";
                     }else{
